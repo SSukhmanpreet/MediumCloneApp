@@ -1,32 +1,27 @@
-import "./App.css";
-import axios from "axios";
-import Books from "./components/articles";
-import { useEffect, useState } from "react";
-
-const API_URL = "http://localhost:3000/api/v1/articles";
-
-function getAPIData() {
-  return axios.get(API_URL).then((response) => response.data);
-}
-
+import React from "react";
+import ShowAllPosts from "./Components/ShowAllPosts";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Register from "./Components/Register";
+import Login from "./Components/Login";
+import UserProfile from "./Components/UserProfile";
+import TopPosts from "./Components/TopPosts";
+import Header from "./Components/Header";
+import AddPost from "./Components/AddPost";
 function App() {
-  const [books, setBooks] = useState([]);
-
-  useEffect(() => {
-    let mounted = true;
-    getAPIData().then((items) => {
-      if (mounted) {
-        setBooks(items);
-      }
-    });
-    return () => (mounted = false);
-  }, []);
-
   return (
-    <div className="App">
-      <h1>Hello</h1>
-      <Books books={books} />
-    </div>
+    <Router>
+      <div>
+        <Header />
+        <Routes>
+          <Route path="/" element={<ShowAllPosts />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/top-posts" element={<TopPosts />} />
+          <Route path="/login" element={<Login />} />
+          <Route exact path="/profile" element={<UserProfile />} />
+          <Route exact path="/add" element={<AddPost />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
