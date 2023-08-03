@@ -36,3 +36,151 @@
     transform: rotate(360deg);
   }
 }
+
+
+
+
+
+
+
+
+
+
+/* Style for the container holding the component */
+.component-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Style for the link to add a new post */
+.addPost-link {
+  display: block;
+  text-decoration: none;
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+.addPost-link:hover {
+  text-decoration: underline;
+}
+
+/* Style for each individual post container */
+.posts-container {
+  margin-bottom: 20px;
+}
+
+/* Style for the post title */
+.postHeading {
+  font-size: 24px;
+  color: #333;
+}
+
+/* Style for the post author */
+.postAuthor {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Style for the post date */
+.postDate {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Style for the post text */
+.postText {
+  font-size: 16px;
+  color: #333;
+}
+
+/* Style for the post topic */
+.postTopic {
+  font-size: 16px;
+  font-weight: bold;
+  color: #007bff;
+}
+
+/* Style for the post featured image */
+.postFeaturedImage {
+  max-width: 100%;
+  height: auto;
+  margin: 10px 0;
+}
+
+/* Style for the buttons */
+button {
+  cursor: pointer;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+/* Style for the Like and Comment buttons */
+.postLike-button,
+.postComments-button {
+  background-color: #28a745;
+}
+
+/* Style for the horizontal line */
+hr {
+  border: 0;
+  height: 1px;
+  background-color: #ccc;
+  margin: 20px 0;
+}
+
+
+
+/* Style for the form container */
+.edit-post-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Style for form labels */
+.edit-post-form label {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+/* Style for form input fields and textarea */
+.edit-post-form input[type="text"],
+.edit-post-form textarea,
+.edit-post-form input[type="datetime-local"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+/* Style for the Save Changes button */
+.edit-post-form button {
+  cursor: pointer;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+.edit-post-form button:hover {
+  background-color: #0056b3;
+}
+
+/* Optional: add some spacing between form fields */
+.edit-post-form div {
+  margin-bottom: 20px;
+}
