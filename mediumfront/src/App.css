@@ -76,8 +76,8 @@
   color: #333;
 }
 
-/* Style for the post author */
-.postAuthor {
+/* Style for the post user */
+.postuser {
   font-size: 14px;
   color: #666;
 }
@@ -101,8 +101,8 @@
   color: #007bff;
 }
 
-/* Style for the post featured image */
-.postFeaturedImage {
+/* Style for the post Image */
+.postimage {
   max-width: 100%;
   height: auto;
   margin: 10px 0;

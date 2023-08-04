@@ -6,45 +6,59 @@ import './App.css';
 const AllPosts = () => {
     const [posts, setPosts] = useState([{
         title: "post1",
-        author: "author1",
+        user: "user1",
         date: "1st",
         likes: "l1",
         comments: "c1",
         id: "1",
         topic: "t1",
-        featuredImage: "i1",
+        image: "i1",
         text: "tx1",
     }, {
         title: "post2",
-        author: "author2",
+        user: "user2",
         date: "2nd",
         likes: "l2",
         comments: "c2",
         id: "2",
         topic: "t2",
-        featuredImage: "i2",
+        image: "i2",
         text: "tx2",
     }, {
         title: "post3",
-        author: "author3",
+        user: "user3",
         date: "3rd",
         likes: "l3",
         comments: "c3",
         id: "3",
         topic: "t3",
-        featuredImage: "i3",
+        image: "i3",
         text: "tx3",
     }]);
     // const [filteredPosts, setFilteredPosts] = useState([]);
-
+    // const getAllPostsData = async () => {
+    //     const res = await fetch(`/posts`, {
+    //         method: "GET",
+    //         headers: {
+    //             "Content-Type": "application/json"
+    //         }
+    //     });
+    //     // const data = await res.json();
+    //     console.log("data");
+    //     // console.log(data);
+    //     if (res.status === 404
+    //         // || !data
+    //     ) {
+    //         console.log("Error 404: while getting data in home ");
+    //     } else {
+    //         console.log("data");
+    //         // setPosts(data);
+    //         // setResPerPage(data.resPerPage)
+    //     }
+    // };
     useEffect(() => {
-        // Fetch posts data from your backend API or any other data source
-        axios.get('https://api.example.com/posts')
-            .then(response => {
-                setPosts(response.data);
-                // setFilteredPosts(response.data);
-            })
-            .catch(error => console.error(error));
+        console.log("loaded");
+        // getAllPostsData();
     }, []);
 
     return (
@@ -55,13 +69,14 @@ const AllPosts = () => {
             {/* Display Filtered Posts */}
             {posts.map(post => (
                 <div className='posts-container' key={post.id}>
-                    <Link>
+                    <Link to={`${post.id}`}>
                         <h2 className='postHeading'>{post.title}</h2>
-                        <p className='postAuthor'>Author: {post.author}</p>
+                        <p className='postuser'>user: {post.user}</p>
                         <p className='postDate'>Date: {post.date}</p>
                         <p className='postText'>Text: {post.text}</p>
                         <p className='postTopic'>Topic: {post.topic}</p>
-                        <img className='postFeaturedImage' src='' alt={post.featuredImage}></img>
+                        <img className='postimage' src='' alt={post.image}></img>
+                        <br/>
                         <button className='postLike-button'>Likes: {post.likes}</button>
                         <button className='postComments-button'>Comments: {post.comments}</button>
                         <hr />

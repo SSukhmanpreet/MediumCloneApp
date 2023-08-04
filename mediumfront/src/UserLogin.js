@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from "axios";
 
 const UserLogin = () => {
@@ -12,25 +12,54 @@ const UserLogin = () => {
         setUser({ ...user, [name]: value });
     };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        axios.post("/api/login", user).then((response) => {
-            // Handle successful login (optional)
-            console.log("User logged in successfully!");
-            // Save the JWT token in local storage
-            localStorage.setItem("token", response.data.token);
-        }).catch((error) => {
-            // Handle login error (optional)
-            console.error("Error logging in:", error);
-        });
-        console.log('User login data:', user);
-        // You can add further logic here to submit user data to the backend for authentication.
-        // For this example, we are simply printing the user data to the console.
+    const loginUser = async (event) => {
+        event.preventDefault()
+        console.log("onsubmit")
+        window.location.href = '/userProfile'
+        // const response = await fetch(`/login`, {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     withCredentials: true,
+        //     body: JSON.stringify(user),
+        // })
+        // const data = await response.json()
+        // console.log(data.message)
+        // if (response.status === 200) {
+        //     localStorage.setItem('token', data.access_token)
+        //     alert(data.message)
+        //     window.location.href = '/userProfile'
+        // } else {
+        //     alert(data.message)
+        // }
     };
+
+    useEffect(async () => {
+        console.log("LOADED");
+        // if (localStorage.getItem('token')) {
+        //     const givingToken = localStorage.getItem('token');
+        //     console.log('token found')
+        //     console.log(givingToken)
+        //     const response = await fetch(`/auth`, {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //         },
+        //         body: JSON.stringify({
+        //             token: givingToken,
+        //         })
+        //     })
+        //     if (response.status === 200) {
+        //         window.location.href = '/userProfile'
+        //     }
+        // }
+    }, [])
+
     return (
         <div>
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
+            <h2>User Login</h2>
+            <form>
                 <div>
                     <label>Email:</label>
                     <input
@@ -49,7 +78,9 @@ const UserLogin = () => {
                         onChange={handleInputChange}
                     />
                 </div>
-                <button type="submit">Login</button>
+                <div className='signInButton'>
+                    <button type="submit" onClick={loginUser}>Login</button>
+                </div>
             </form>
         </div>
 
