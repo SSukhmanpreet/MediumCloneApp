@@ -3,6 +3,14 @@ import "./Header.css";
 import { Link } from "react-router-dom";
 
 const Header = () => {
+  const isLoggedIn = !!localStorage.getItem("token");
+  const handleLogout = () => {
+    // Clear the JWT token from local storage
+    localStorage.removeItem("token");
+    // Reload the page to reflect the changes
+    window.location.reload();
+  };
+
   return (
     <div className="Header-container">
       <div className="header-items-left">
@@ -11,15 +19,21 @@ const Header = () => {
         </div>
       </div>
       <div className="header-items-right">
-        <div className="login-link">
-          <a href="/login">Login</a>
-        </div>
-        <div className="register-link">
-          <a href="/register">Register</a>
-        </div>
-        <div className="addPost-link">
-          <a href="/add">Add Posts</a>
-        </div>
+        {!isLoggedIn && (
+          <div className="login-link">
+            <Link to="/login">Login</Link>
+          </div>
+        )}
+        {!isLoggedIn && (
+          <div className="register-link">
+            <Link to="/register">Register</Link>
+          </div>
+        )}
+        {isLoggedIn && (
+          <div className="logout-link">
+            <button onClick={handleLogout}>Logout</button>
+          </div>
+        )}
       </div>
     </div>
   );

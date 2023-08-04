@@ -6,6 +6,7 @@ const FilterSearch = ({ handleFilter, handleSearch }) => {
       <label htmlFor="filter">Filter By:</label>
       <select id="filter" onChange={handleFilter}>
         <option value="">--Select--</option>
+        <option value="title">Title</option>
         <option value="author">Author</option>
         <option value="date">Date</option>
         <option value="likes">Number of Likes</option>

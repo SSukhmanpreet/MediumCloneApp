@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 const AuthorProfile = ({ match }) => {
+  const { id } = useParams();
+  const [authorId, setAuthorId] = useState(id);
   const [authorData, setAuthorData] = useState({
     username: "",
     // Add other author profile fields here
@@ -9,22 +12,22 @@ const AuthorProfile = ({ match }) => {
 
   const [authorPosts, setAuthorPosts] = useState([]);
 
-  useEffect(() => {
-    // Fetch author details from the backend using the author ID from the URL params
-    const authorId = match.params.authorId;
-    axios
-      .get(`/api/user/${authorId}/profile`)
-      .then((response) => {
-        // Set author data
-        setAuthorData(response.data.author);
-        // Set author posts
-        setAuthorPosts(response.data.posts);
-      })
-      .catch((error) => {
-        // Handle error (e.g., invalid author ID, failed request, etc.)
-        console.error("Error fetching author data:", error);
-      });
-  }, [match.params.authorId]);
+  // useEffect(() => {
+  //   // Fetch author details from the backend using the author ID from the URL params
+
+  //   axios
+  //     .get(`/api/user/${authorId}/profile`)
+  //     .then((response) => {
+  //       // Set author data
+  //       setAuthorData(response.data.author);
+  //       // Set author posts
+  //       setAuthorPosts(response.data.posts);
+  //     })
+  //     .catch((error) => {
+  //       // Handle error (e.g., invalid author ID, failed request, etc.)
+  //       console.error("Error fetching author data:", error);
+  //     });
+  // }, [match.params.authorId]);
 
   return (
     <div>

@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
+    firstName: "",
+    LastName: "",
     email: "",
     password: "",
   });
@@ -20,13 +24,13 @@ const Register = () => {
     event.preventDefault();
     // Send registration data to the backend
     axios
-      .post("/api/register", formData)
+      .post("http://localhost:8000/api/register", formData)
       .then((response) => {
-        // Handle successful registration (optional)
-        console.log("User registered successfully!");
+        // Handle successful registration
+        navigate("/login");
       })
       .catch((error) => {
-        // Handle registration error (optional)
+        // Handle registration error
         console.error("Error registering user:", error);
       });
   };
@@ -35,6 +39,28 @@ const Register = () => {
     <div>
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="firstName">firstName:</label>
+          <input
+            type="text"
+            id="firstName"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="LastName">LastName:</label>
+          <input
+            type="text"
+            id="LastName"
+            name="LastName"
+            value={formData.LastName}
+            onChange={handleChange}
+            required
+          />
+        </div>
         <div>
           <label htmlFor="username">Username:</label>
           <input

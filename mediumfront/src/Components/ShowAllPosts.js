@@ -1,40 +1,54 @@
-import React, { useState } from "react";
+import React from "react";
 import PostItem from "./PostItem";
 import FilterSearch from "./FiterSearch";
 import AddPost from "./AddPost";
 import EditPost from "./EditPost";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 const ShowAllPosts = () => {
-  // Sample data for posts (you can fetch this from an API or database in a real use case)
-  const initialPosts = [
-    {
-      id: 1,
-      title: "Post 1",
-      author: "John Doe",
-      date: "2023-08-03",
-      likes: 10,
-      comments: 5,
-      topic: "Technology",
-      text: "This is the content of post 1...",
-    },
-    {
-      id: 2,
-      title: "Post 2",
-      author: "Jane Smith",
-      date: "2023-08-02",
-      likes: 20,
-      comments: 8,
-      topic: "Travel",
-      text: "This is the content of post 2...",
-    },
-    // Add more posts here
-  ];
-
-  const [posts, setPosts] = useState(initialPosts);
+  // Fetch all posts from the API
+  const [posts, setPosts] = useState([]);
   const [filterBy, setFilterBy] = useState(""); // 'author', 'date', 'likes', 'comments'
   const [searchInput, setSearchInput] = useState("");
   const [editingPost, setEditingPost] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/posts")
+      .then((response) => {
+        setPosts(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching posts:", error);
+      });
+  }, []);
+  // // Sample data for posts (you can fetch this from an API or database in a real use case)
+  // const initialPosts = [
+  //   {
+  //     id: 1,
+  //     title: "Post 1",
+  //     author: "John Doe",
+  //     date: "2023-08-03",
+  //     likes: 10,
+  //     comments: 5,
+  //     topic: "Technology",
+  //     text: "This is the content of post 1...",
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "Post 2",
+  //     author: "Jane Smith",
+  //     date: "2023-08-02",
+  //     likes: 20,
+  //     comments: 8,
+  //     topic: "Travel",
+  //     text: "This is the content of post 2...",
+  //   },
+  //   // Add more posts here
+  // ];
+
   // Function to handle filtering posts
   const handleFilter = (event) => {
     setFilterBy(event.target.value);
@@ -57,7 +71,7 @@ const ShowAllPosts = () => {
 
   // Filter and search the posts based on user input
   const filteredPosts = posts.filter((post) => {
-    if (filterBy === "" && searchInput) {
+    if (filterBy === "title" && searchInput) {
       return post.title.toLowerCase().includes(searchInput.toLowerCase());
     } else if (filterBy === "author" && searchInput) {
       return post.author.toLowerCase().includes(searchInput.toLowerCase());
@@ -102,6 +116,7 @@ const ShowAllPosts = () => {
       {/* Add New Post Form
       <AddPost onAddPost={handleAddPost} /> */}
       {/* Edit Post Form */}
+      <a href="/add">Add-Posts</a>
       {isEditing && (
         <EditPost
           post={editingPost}
@@ -113,21 +128,15 @@ const ShowAllPosts = () => {
       <FilterSearch handleFilter={handleFilter} handleSearch={handleSearch} />
       {/* Display filtered posts */}
       {filteredPosts.map((post) => (
-        <PostItem
-          key={post.id}
-          post={post}
-          onDeletePost={() => handleDeletePost(post.id)}
-          onEditPost={handleEditPost}
-        />
+        <>
+          <PostItem
+            key={post.id}
+            post={post}
+            onDeletePost={() => handleDeletePost(post.id)}
+            onEditPost={handleEditPost}
+          />
+        </>
       ))}
-      {/* Edit Post Form */}
-      {isEditing && (
-        <EditPost
-          post={editingPost}
-          onUpdatePost={handleUpdatePost}
-          onCloseEditForm={handleCloseEditForm}
-        />
-      )}
     </div>
   );
 };

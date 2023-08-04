@@ -1,7 +1,9 @@
-import React, { useState } from "react";
 import axios from "axios";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -17,7 +19,6 @@ const Login = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Send login data to the backend
     axios
       .post("/api/login", formData)
       .then((response) => {
@@ -25,6 +26,9 @@ const Login = () => {
         console.log("User logged in successfully!");
         // Save the JWT token in local storage
         localStorage.setItem("token", response.data.token);
+        // Redirect or perform other actions after successful login
+        // For example, you can use React Router's useHistory hook to navigate to a different page
+        navigate("/user/:userId");
       })
       .catch((error) => {
         // Handle login error (optional)

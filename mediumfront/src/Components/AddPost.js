@@ -1,13 +1,13 @@
+import axios from "axios";
 import React from "react";
 import { useState } from "react";
-const AddPost = ({ onAddPost }) => {
+
+const AddPost = () => {
   const [newPost, setNewPost] = useState({
     title: "",
     topic: "",
     featuredImage: "",
     text: "",
-    dateTime: "",
-    author: "",
   });
 
   // Function to handle form input changes
@@ -22,16 +22,27 @@ const AddPost = ({ onAddPost }) => {
   // Function to handle form submission
   const handleSubmit = (event) => {
     event.preventDefault();
-    onAddPost(newPost);
+
     // Clear the form fields after submission
-    setNewPost({
-      title: "",
-      topic: "",
-      featuredImage: "",
-      text: "",
-      dateTime: "",
-      author: "",
-    });
+    axios
+      .post("http://127.0.0.1:3000/posts", newPost)
+      .then((response) => {
+        // Handle the successful response, if needed
+        console.log("Post created successfully!");
+        // Clear the form fields after successful submission
+        setNewPost({
+          title: "",
+          topic: "",
+          featuredImage: "",
+          text: "",
+          dateTime: "",
+          author: "",
+        });
+      })
+      .catch((error) => {
+        // Handle errors, if any
+        console.error("Error creating the post:", error);
+      });
   };
 
   return (

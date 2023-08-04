@@ -1,0 +1,48 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "Post 1",
+      "author": "John Doe",
+      "date": "2023-08-03",
+      "likes": 10,
+      "comments": 5,
+      "topic": "Technol",
+      "text": "This is the content of post 1...",
+      "img": "#"
+    },
+    {
+      "id": 2,
+      "title": "Post 2",
+      "author": "Jane Smith",
+      "date": "2023-08-02",
+      "likes": 20,
+      "comments": 8,
+      "topic": "Travel",
+      "text": "This is the content of post 2...",
+      "img": "#"
+    }
+  ],
+  "topics": [
+    {
+      "id": 1,
+      "name": "Technology",
+      "description": "Latest trends in technology."
+    },
+    {
+      "id": 2,
+      "name": "Travel",
+      "description": "Explore beautiful travel destinations."
+    },
+    {
+      "id": 3,
+      "name": "Food",
+      "description": "Delicious food recipes and restaurant reviews."
+    },
+    {
+      "id": 4,
+      "name": "Fitness",
+      "description": "Tips for a healthy and active lifestyle."
+    }
+  ]
+}

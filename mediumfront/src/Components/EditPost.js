@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 
+import { useParams } from "react-router-dom";
+
 const EditPost = ({ post, onUpdatePost, onCloseEditForm }) => {
+  const { id } = useParams();
   const [editedPost, setEditedPost] = useState({ ...post });
 
   // Function to handle form input changes
