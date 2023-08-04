@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import EditPostForm from './EditPost';
 import { Link } from 'react-router-dom';
+import PostCard from './PostCard';
 
 const UserPostsList = () => {
     const [posts, setPosts] = useState([{
@@ -44,26 +45,30 @@ const UserPostsList = () => {
     //         .catch(error => console.error(error));
     // }, []);
 
-    // const getAllPostsData = async () => {
-    //     const res = await fetch(`/posts`, {
-    //         method: "GET",
-    //         headers: {
-    //             "Content-Type": "application/json"
-    //         }
-    //     });
-    //     // const data = await res.json();
-    //     console.log("data");
-    //     // console.log(data);
-    //     if (res.status === 404
-    //         // || !data
-    //     ) {
-    //         console.log("Error 404: while getting data in home ");
-    //     } else {
-    //         console.log("data");
-    //         // setPosts(data);
-    //         // setResPerPage(data.resPerPage)
-    //     }
-    // };
+    const getAllPostsData = async () => {
+        const mockURL = `https://c131894a-7f04-47db-919b-a75f0fc73a55.mock.pstmn.io`;
+        const res = await fetch(`${mockURL}/posts`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        const data = await res.json();
+        console.log("data");
+        console.log(data);
+        if (res.status === 404
+            // || !data
+        ) {
+            console.log("Error 404: while getting data in home ");
+        } else {
+            console.log("data");
+            setPosts(data);
+        }
+    };
+    useEffect(() => {
+        console.log("loaded");
+        getAllPostsData();
+    }, []);
     const handleDeletePost = async (postId) => {
         const updatedPosts = posts.filter(post => post.id !== postId);
         setPosts(updatedPosts);
@@ -90,7 +95,21 @@ const UserPostsList = () => {
                 <h2>Add New Post</h2>
             </Link>
             {/* Display Filtered Posts */}
-            {posts.map(post => (
+            {
+                posts.map((post, key) => (
+                    <div className='posts-container' key={post.id}>
+                        <PostCard key={key} {...post}></PostCard>
+                        <Link to={`editPost/${post.id}`}>
+                            {/* <Button color='warning' variant="contained">Edit</Button> */}
+                            <button className='postEdit-button'>Edit</button>
+                        </Link>
+                        <button className='postDelete-button' onClick={() => handleDeletePost(post.id)}>Delete</button>
+                        <hr />
+                    </div>
+                ))
+            }
+            {/* {posts.map(post => (
+
                 <div className='posts-container' key={post.id}>
                     <div>
                         <Link>
@@ -105,14 +124,13 @@ const UserPostsList = () => {
                             <button className='postComments-button'>Comments: {post.comments}</button>
                         </Link>
                         <Link to={`editPost/${post.id}`}>
-                            {/* <Button color='warning' variant="contained">Edit</Button> */}
                             <button className='postEdit-button'>Edit</button>
                         </Link>
                         <button className='postDelete-button' onClick={() => handleDeletePost(post.id)}>Delete</button>
                         <hr />
                     </div>
                 </div>
-            ))}
+            ))} */}
         </div>
     );
 };

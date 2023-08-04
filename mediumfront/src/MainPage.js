@@ -1,6 +1,6 @@
 import './App.css';
 import AllPosts from './AllPosts';
-import UserRegistration from './UserRegistration';
+import UserSignUp from './UserSignUp';
 import UserLogin from './UserLogin';
 import UserProfile from './UserProfile';
 import { useState } from 'react';
@@ -12,6 +12,7 @@ import EditPost from './EditPost';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PostDetails from './PostDetails';
 import UsersList from './UsersLIst';
+// import Sidebar from './SideBar';
 
 const MainPage = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -95,7 +96,7 @@ const MainPage = () => {
                     <Route path='/' element={<HomePage />} />
                     <Route path='/allPosts' element={<AllPosts />} />
                     <Route path='/addPost' element={<AddNewPost />} />
-                    <Route path='/userRegistration' element={<UserRegistration />} />
+                    <Route path='/UserSignUp' element={<UserSignUp />} />
                     <Route path='/userLogin' element={<UserLogin onLogin={handleLogin} />} />
                     <Route path='/userProfile' element={<UserProfile user={user} />} />
                     <Route path='/userPosts' element={<UserPostsList />} />
@@ -103,6 +104,7 @@ const MainPage = () => {
                     <Route path='/allPosts/:id' element={<PostDetails posts={sampleUser.posts} />} />
                     <Route path='/allUsers' element={<UsersList />} />
                 </Routes>
+                {/* <Sidebar /> */}
             </div>
         </Router>
     );

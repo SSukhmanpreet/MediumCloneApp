@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import TextField from '@mui/material/TextField';
+import TextareaAutosize from '@mui/base/TextareaAutosize';
+import { Button } from '@mui/material';
 
 const AddNewPost = () => {
     const [newPost, setNewPost] = useState({
@@ -11,8 +14,6 @@ const AddNewPost = () => {
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-        console.log(event.target);
-        console.log(name + " " + value);
         setNewPost({ ...newPost, [name]: value });
     };
 
@@ -29,41 +30,41 @@ const AddNewPost = () => {
             return;
         }
         console.log(newPost);
-        const formData = new FormData();
-        formData.append("newPost", newPost);
-        console.log(formData);
-        // axios.post(`/posts`, formData)
-        //     .then(() => {
-        //         alert('Post Added to Database')
-        //         window.location.href = '/'
-        //     })
-        //     .catch((err) => {
-        //         console.log(err);
-        //         alert("Error");
-        //     })
+        const mockURL = `https://c131894a-7f04-47db-919b-a75f0fc73a55.mock.pstmn.io`;
+        const response = await fetch(`${mockURL}/posts`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true,
+            body: JSON.stringify(newPost),
+        });
+        console.log("after fetch");
+        const data = await response.json()
+        console.log("data");
+        console.log(data);
+        if (response.status === 404 || !data) {
+            console.log("error while pushing data to database");
+            alert(data);
+        } else {
+            alert("Created Post Successfully!");
+            window.location.href = '/';
+        }
     };
 
     return (
         <>
             <h2>Add New Post</h2>
-            <form onSubmit={handleSubmit}>
+            <form>
                 <div>
-                    <label>Title:</label>
-                    <input type="text" name="title" value={newPost.title} onChange={handleInputChange} />
+                    <TextField sx={{ margin: "20px 10px", width: "500px" }} required id="fullWidth" label="Title" variant="outlined" type="text" name="title" value={newPost.title} onChange={handleInputChange} />
+                    <TextField sx={{ margin: "20px 10px", width: "500px" }} required id="fullWidth" label="Topic" variant="outlined" type="text" name="topic" value={newPost.topic} onChange={handleInputChange} />
                 </div>
                 <div>
-                    <label>Topic:</label>
-                    <input type="text" name="topic" value={newPost.topic} onChange={handleInputChange} />
+                    <TextField sx={{ margin: "20px 10px", width: "500px" }} required id="fullWidth" label="Image" variant="outlined" type="text" name="image" value={newPost.image} onChange={handleInputChange} />
+                    <TextareaAutosize sx={{ margin: "20px 10px", width: "500px" }} maxRows={5} placeholder='Blog Body' minRows={3} required name="text" value={newPost.text} onChange={handleInputChange} id="fullWidth" label="Blog Body" variant="outlined" />
                 </div>
-                <div>
-                    <label>Image:</label>
-                    <input type="text" name="image" value={newPost.image} onChange={handleInputChange} />
-                </div>
-                <div>
-                    <label>Text:</label>
-                    <textarea name="text" value={newPost.text} onChange={handleInputChange} />
-                </div>
-                <button type="submit">Add Post</button>
+                <Button onClick={handleSubmit} variant="contained">Add Post</Button>
             </form>
         </>
     );
