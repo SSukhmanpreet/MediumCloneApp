@@ -1,22 +1,3 @@
-// const HeaderComponent = () => {
-//     return (
-//         <>
-//             <div>
-
-//                 <h1>Header</h1>
-//             </div>
-//         </>
-//     )
-// }
-// export default HeaderComponent;
-
-
-
-
-
-
-
-
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -34,6 +15,7 @@ import AdbIcon from '@mui/icons-material/Adb';
 import SearchIcon from '@mui/icons-material/Search';
 import InputBase from '@mui/material/InputBase';
 import { styled, alpha } from '@mui/material/styles';
+import Links from './Links';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -77,14 +59,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-
-
-
-
-
-const pages = ['Posts', 'Authors'];
-const settings = ['Profile', 'Login', 'SignUp', 'Logout'];
-
 function HeaderComponent() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -94,6 +68,7 @@ function HeaderComponent() {
     };
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
+        window.location.href='/userProfile';
     };
 
     const handleCloseNavMenu = () => {
@@ -105,6 +80,7 @@ function HeaderComponent() {
     };
 
     return (
+        <>
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
@@ -156,11 +132,11 @@ function HeaderComponent() {
                                 display: { xs: 'block', md: 'none' },
                             }}
                         >
-                            {pages.map((page) => (
+                            {/* {pages.map((page) => (
                                 <MenuItem key={page} onClick={handleCloseNavMenu}>
                                     <Typography textAlign="center">{page}</Typography>
                                 </MenuItem>
-                            ))}
+                            ))} */}
                         </Menu>
                     </Box>
                     <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -183,7 +159,7 @@ function HeaderComponent() {
                         MEDIUM-CLONE
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {pages.map((page) => (
+                        {/* {pages.map((page) => (
                             <Button
                                 key={page}
                                 onClick={handleCloseNavMenu}
@@ -191,9 +167,9 @@ function HeaderComponent() {
                             >
                                 {page}
                             </Button>
-                        ))}
+                        ))} */}
                     </Box>
-                    <Search>
+                    {/* <Search>
                         <SearchIconWrapper>
                             <SearchIcon />
                         </SearchIconWrapper>
@@ -201,10 +177,10 @@ function HeaderComponent() {
                             placeholder="Search…"
                             inputProps={{ 'aria-label': 'search' }}
                         />
-                    </Search>
+                    </Search> */}
                     
                     <Box sx={{ flexGrow: 0, marginLeft: "20px" }}>
-                        <Tooltip title="Open settings">
+                        <Tooltip title="Open Profile">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
                             </IconButton>
@@ -225,33 +201,18 @@ function HeaderComponent() {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            {settings.map((setting) => (
+                            {/* {settings.map((setting) => (
                                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
                                     <Typography textAlign="center">{setting}</Typography>
                                 </MenuItem>
-                            ))}
+                            ))} */}
                         </Menu>
                     </Box>
                 </Toolbar>
             </Container>
         </AppBar>
+        <Links/>
+        </>
     );
 }
 export default HeaderComponent;
-
-
-
-
-
-
-
-
-
-
-//
-//
-//
-//
-// 
-
-

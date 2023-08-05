@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import EditPostForm from './EditPost';
 import { Link } from 'react-router-dom';
+import './App.css';
 import PostCard from './PostCard';
 
-const UserPostsList = () => {
+const TopPosts = () => {
     const [posts, setPosts] = useState([
         {
             id: "1",
@@ -227,101 +226,45 @@ const UserPostsList = () => {
             number_of_comments: 24
         }
     ]);
-    // useEffect(() => {
-    //     // Fetch posts data from your backend API or any other data source
-    //     axios.get('https://api.example.com/posts')
-    //         .then(response => {
-    //             setPosts(response.data);
-    //         })
-    //         .catch(error => console.error(error));
-    // }, []);
-
+    // const [filteredPosts, setFilteredPosts] = useState([]);
     const getAllPostsData = async () => {
         const mockURL = `https://7c5df6d5-e40e-40f9-bdd2-4e8319aa7075.mock.pstmn.io`;
-        const res = await fetch(`${mockURL}/posts/me`, {
+        const res = await fetch(`${mockURL}/posts`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
             }
         });
         const data = await res.json();
-        console.log("data");
-        console.log(data);
+        // console.log("data");
+        // console.log(data);
         if (res.status === 404
             // || !data
         ) {
             console.log("Error 404: while getting data in home ");
         } else {
-            console.log("data");
-            setPosts(data);
+            const topPosts = data.sort(
+                (p1, p2) => (p1.number_of_likes < p2.number_of_likes) ? 1 : (p1.number_of_likes > p2.number_of_likes) ? -1 : 0)
+                .slice(0, 2);
+            ;
+            setPosts(topPosts);
         }
     };
     useEffect(() => {
         console.log("loaded");
         getAllPostsData();
     }, []);
-    const handleDeletePost = async (postId) => {
-        const updatedPosts = posts.filter(post => post.id !== postId);
-        setPosts(updatedPosts);
 
-        // const res2 = await fetch(`/posts${id}`, {
-        //     method: "DELETE",
-        //     headers: {
-        //         "Content-Type": "application/json"
-        //     }
-        // });
-
-        // const deleteData = await res2.json();
-
-        // if (res2.status === 404 || !deleteData) {
-        //     console.log("error 404: while deleting data in edit");
-        // } else {
-        //     alert("Product DELETED from the database");
-        //     // getAllPostsData();
-        // }
-    };
     return (
         <div className='component-container'>
-            {/* Display Filtered Posts */}
-            {
-                posts.map((post, key) => (
-                    // console.log(post)
-                    <div className='posts-container' key={post.id}>
-                        <PostCard key={key} {...post}></PostCard>
-                        <Link to={`editPost/${post.id}`}>
-                            {/* <Button color='warning' variant="contained">Edit</Button> */}
-                            <button className='postEdit-button'>Edit</button>
-                        </Link>
-                        <button className='postDelete-button' onClick={() => handleDeletePost(post.id)}>Delete</button>
-                        <hr />
-                    </div>
-                ))
-            }
-            {/* {posts.map(post => (
-
+            <div><h2>Trending on Medium-Clone</h2></div>
+            {posts.map((post, key) => (
                 <div className='posts-container' key={post.id}>
-                    <div>
-                        <Link>
-                            <h2 className='postHeading'>{post.title}</h2>
-                            <p className='postuser'>user: {post.user}</p>
-                            <p className='postDate'>Date: {post.date}</p>
-                            <p className='postText'>Text: {post.text}</p>
-                            <p className='postTopic'>Topic: {post.topic}</p>
-                            <img className='postimage' src='' alt={post.image}></img>
-                            <br />
-                            <button className='postLike-button'>Likes: {post.likes}</button>
-                            <button className='postComments-button'>Comments: {post.comments}</button>
-                        </Link>
-                        <Link to={`editPost/${post.id}`}>
-                            <button className='postEdit-button'>Edit</button>
-                        </Link>
-                        <button className='postDelete-button' onClick={() => handleDeletePost(post.id)}>Delete</button>
-                        <hr />
-                    </div>
+                    <PostCard key={key} {...post}></PostCard>
                 </div>
-            ))} */}
+            ))}
         </div>
     );
 };
 
-export default UserPostsList;
+export default TopPosts;

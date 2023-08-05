@@ -1,63 +1,49 @@
-// import * as React from 'react';
-// import Card from '@mui/material/Card';
-// import CardActions from '@mui/material/CardActions';
-// import CardContent from '@mui/material/CardContent';
-// import CardMedia from '@mui/material/CardMedia';
-// import Typography from '@mui/material/Typography';
-
-// export default function MediaCard() {
-//   return (
-//     <Card sx={{ maxWidth: 345 }}>
-//       <CardMedia
-//         sx={{ height: 140 }}
-//         image="/static/images/cards/contemplative-reptile.jpg"
-//         title="green iguana"
-//       />
-//       <CardContent>
-//         <Typography gutterBottom variant="h5" component="div">
-//           Lizard
-//         </Typography>
-//         <Typography variant="body2" color="text.secondary">
-//           Lizards are a widespread group of squamate reptiles, with over 6,000
-//           species, ranging across all continents except Antarctica
-//         </Typography>
-//       </CardContent>
-//       <CardActions>
-//         <Button size="small">Share</Button>
-//         <Button size="small">Learn More</Button>
-//       </CardActions>
-//     </Card>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
 import * as React from 'react';
-import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
 import { Box } from '@mui/material';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 
 export default function PostCard(props) {
 
+  const handleLoginCheck = async () => {
+    //please uncomment these if your api is set and functional
+
+    // if (localStorage.getItem('token') === "undefined") {
+    //   alert("Please Sign In to continue");
+    //   window.location.href = '/userlogin';
+    // }
+    // else {
+    //   const givingToken = localStorage.getItem('token');
+    //   // console.log(givingToken)
+    //   const response = await fetch(`/auth`, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({
+    //       token: givingToken,
+    //     })
+    //   })
+    //   const data = await response.json();
+    //   console.log(data.message);
+    //   if (response.status !== 200) {
+    //     console.log(data.message);
+    //     window.location.href = '/userLogin';
+    //   } else {
+    //     console.log("user is logged in");
+    //   }
+    // }
+    console.log("user is logged in");
+  }
   return (
     <Card sx={{ maxWidth: 800, margin: "20px 10px" }}>
       <CardHeader
@@ -70,7 +56,7 @@ export default function PostCard(props) {
         subheader={props.created_at}
       />
       <Box sx={{ display: 'flex' }}>
-        <Box sx={{flex : 1}}>
+        <Box sx={{ flex: 1 }}>
           <CardContent>
             <Typography gutterBottom variant="h5" component="div">
               {props.title}.
@@ -80,11 +66,11 @@ export default function PostCard(props) {
             </Typography>
           </CardContent>
           <CardActions>
-            <IconButton aria-label="add to favorites">
-              <FavoriteIcon /> {props.likes}
+            <IconButton onClick={handleLoginCheck} aria-label="add to favorites">
+              <FavoriteIcon /> {props.number_of_likes}
             </IconButton>
-            <IconButton aria-label="add to favorites">
-              <ChatBubbleIcon />{props.comments}
+            <IconButton onClick={handleLoginCheck} aria-label="add to favorites">
+              <ChatBubbleIcon />{props.number_of_comments}
             </IconButton>
             {/* <Button size="small">Like: {props.likes}</Button> */}
             {/* <Button size="small">Comment: {props.comments}</Button> */}
@@ -93,7 +79,7 @@ export default function PostCard(props) {
         <CardMedia
           component="img"
           sx={{ width: 151 }}
-          image={`/no_image2.png`}
+          image={`/${props.image}`}
           alt="Live from space album cover"
         />
       </Box>

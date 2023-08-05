@@ -122,7 +122,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useState } from 'react';
-import axios from 'axios';
 export default function UserSignUp() {
     const [user, setUser] = useState({
         username: '',
@@ -131,7 +130,7 @@ export default function UserSignUp() {
         email: '',
         password: '',
     });
-
+    const [confirmPassword, setConfirmPassword] = useState([]);
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setUser({ ...user, [name]: value });
@@ -141,7 +140,7 @@ export default function UserSignUp() {
         console.log("onsubmit");
         console.log(user);
         // window.location.href = '/userLogin';
-        const mockURL = `https://c131894a-7f04-47db-919b-a75f0fc73a55.mock.pstmn.io`;
+        const mockURL = `https://7c5df6d5-e40e-40f9-bdd2-4e8319aa7075.mock.pstmn.io`;
         const response = await fetch(`${mockURL}/users`, {
             method: 'POST',
             headers: {
@@ -171,7 +170,13 @@ export default function UserSignUp() {
             password: data.get('password'),
         });
     };
-
+    const handleConfirmPassword = (e) => {
+        if (e.target.value !== user.password) {
+            console.log("The passwords do not match");
+        } else {
+            alert("Passwords Match!");
+        }
+    }
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
@@ -273,8 +278,8 @@ export default function UserSignUp() {
                                 autoComplete="new-password"
                                 type="password"
                                 name="password"
-                                value={user.password}
-                                onChange={handleInputChange}
+                                // value={confirmPassword}
+                                onKeyUp={(e) => { handleConfirmPassword(e) }}
                             />
                         </Grid>
                     </Grid>

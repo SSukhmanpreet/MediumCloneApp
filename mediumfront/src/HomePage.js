@@ -1,8 +1,11 @@
+import TopPosts from "./TopPosts";
+import AllTopics from "./Topics";
+
 const HomePage = () => {
     return (
         <>
-            <div> HELLO HOMEPAGE</div>
-            <div> Recommended posts</div>
+            <AllTopics />
+            <TopPosts />
         </>
     )
 }
