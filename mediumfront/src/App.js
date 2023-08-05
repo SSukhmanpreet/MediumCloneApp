@@ -1,33 +1,21 @@
-import "./App.css";
-import axios from "axios";
-import Books from "./components/articles";
-import { useEffect, useState } from "react";
-
-const API_URL = "http://localhost:3000/api/v1/articles";
-
-function getAPIData() {
-  return axios.get(API_URL).then((response) => response.data);
-}
+import './App.css';
+import React from 'react';
+import HeaderComponent from './HeaderComponent';
+import FooterComponent from './FooterComponent';
+import MainPage from './MainPage';
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
 
 function App() {
-  const [books, setBooks] = useState([]);
-
-  useEffect(() => {
-    let mounted = true;
-    getAPIData().then((items) => {
-      if (mounted) {
-        setBooks(items);
-      }
-    });
-    return () => (mounted = false);
-  }, []);
-
-  return (
-    <div className="App">
-      <h1>Hello</h1>
-      <Books books={books} />
-    </div>
-  );
+    return (
+        <div className='app'>
+            <HeaderComponent />
+            <MainPage />
+            <FooterComponent />
+        </div>
+    );
 }
 
 export default App;
