@@ -1,8 +1,8 @@
 class Api::V1::ArticlesController < ApplicationController
   # before_action :set_article, only: %i[ show update destroy ]
   # skip_before_action :verify_authenticity_token
-  before_action :authenticate_user, only: [:create]
-  before_action :authenticate_request, only: [:save_for_later]
+  # before_action :authenticate_user, only: [:create]
+  before_action :authenticate_request, only: [:save_for_later, :create]
   # GET /articles
   def index
     @articles = Article.all
@@ -29,6 +29,7 @@ class Api::V1::ArticlesController < ApplicationController
     reading_speed = 200 # words per minute (adjust as needed)
     minutes = (word_count.to_f / reading_speed).ceil
     @article.minutes_to_read = minutes
+    # render json: @article
 
     @article.post_likes = 0
     @article.post_comments = 0
@@ -86,7 +87,7 @@ class Api::V1::ArticlesController < ApplicationController
   end
 
   def recommended_posts
-    user = current_user
+    user = User.find(params[:id])
     interested_topics = user.profile.interested_topics
     @recommended_posts = Article.where(topic: interested_topics).where.not(user_id: user.id)
 
@@ -119,7 +120,7 @@ class Api::V1::ArticlesController < ApplicationController
 
   def save_for_later
     article = Article.find(params[:id])
-    (@current_user.profile.save_for_later).push(article.id)
+    @current_user.profile.save_for_later << article.id
     render json: @current_user.profile
   end
 
