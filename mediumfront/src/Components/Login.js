@@ -1,7 +1,37 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { styled } from "@mui/material/styles";
+import {
+  Typography,
+  TextField,
+  Button,
+  Container,
+  Box,
+  CircularProgress,
+  Grid,
+} from "@mui/material";
 
+const LoginContainer = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  marginTop: theme.spacing(4),
+}));
+
+const Form = styled("form")(({ theme }) => ({
+  width: "100%", // Set the width of the form to 100%
+  marginTop: theme.spacing(2),
+}));
+
+const SubmitButton = styled(Button)(({ theme }) => ({
+  marginTop: theme.spacing(3),
+  backgroundColor: theme.palette.primary.main,
+  color: "#fff",
+  "&:hover": {
+    backgroundColor: theme.palette.primary.dark,
+  },
+}));
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -17,54 +47,68 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    axios
-      .post("/api/login", formData)
-      .then((response) => {
-        // Handle successful login (optional)
-        console.log("User logged in successfully!");
-        // Save the JWT token in local storage
-        localStorage.setItem("token", response.data.token);
-        // Redirect or perform other actions after successful login
-        // For example, you can use React Router's useHistory hook to navigate to a different page
-        navigate("/user/:userId");
-      })
-      .catch((error) => {
-        // Handle login error (optional)
-        console.error("Error logging in:", error);
-      });
+    const mockURL = `https://52e49f36-7a43-4897-8fc0-b87cb414e40b.mock.pstmn.io`;
+    const response = await fetch(`${mockURL}/users`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+      body: JSON.stringify(formData),
+    });
+    const data = await response.json();
+    console.log(data);
+    if (response.ok) {
+      localStorage.setItem("token", data.access_token);
+
+      console.log(data.message);
+      navigate("/userProfile");
+    } else {
+      alert(data.message);
+    }
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button type="submit">Login</button>
-      </form>
-    </div>
+    <Container maxWidth="xs">
+      <LoginContainer>
+        <Typography variant="h4">Login</Typography>
+        <Form onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Email"
+                name="email"
+                type="text"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Password"
+                name="password"
+                type="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
+          </Grid>
+          <SubmitButton type="submit" variant="contained">
+            Login
+          </SubmitButton>
+        </Form>
+        <Box mt={2}>
+          {/* Simulating login loader */}
+          <CircularProgress />
+        </Box>
+      </LoginContainer>
+    </Container>
   );
 };
 

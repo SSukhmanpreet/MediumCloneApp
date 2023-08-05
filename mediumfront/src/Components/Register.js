@@ -1,6 +1,49 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { styled } from "@mui/material/styles";
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Grid,
+  Box,
+  CircularProgress,
+} from "@mui/material";
+
+const RegisterContainer = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  marginTop: theme.spacing(4),
+}));
+
+const Form = styled("form")(({ theme }) => ({
+  width: "100%", // Set the width of the form to 100%
+  marginTop: theme.spacing(2),
+}));
+
+const SubmitButton = styled(Button)(({ theme }) => ({
+  marginTop: theme.spacing(3),
+  backgroundColor: theme.palette.secondary.main,
+  color: "#fff",
+  "&:hover": {
+    backgroundColor: theme.palette.secondary.dark,
+  },
+}));
+
+const LinkStyled = styled(Link)(({ theme }) => ({
+  textDecoration: "none",
+  color: theme.palette.primary.main,
+  "&:hover": {
+    textDecoration: "underline",
+  },
+}));
+
+const LoaderContainer = styled(Box)(({ theme }) => ({
+  margin: theme.spacing(3, 0),
+}));
 
 const Register = () => {
   const navigate = useNavigate();
@@ -20,83 +63,104 @@ const Register = () => {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     // Send registration data to the backend
-    axios
-      .post("http://localhost:8000/api/register", formData)
-      .then((response) => {
-        // Handle successful registration
-        navigate("/login");
-      })
-      .catch((error) => {
-        // Handle registration error
-        console.error("Error registering user:", error);
-      });
+    const mockURL = `https://52e49f36-7a43-4897-8fc0-b87cb414e40b.mock.pstmn.io`;
+    const response = await fetch(`${mockURL}/users`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+      body: JSON.stringify(formData),
+    });
+    const data = await response.json();
+    if (response.status === 404 || !data) {
+      console.log("error registering");
+      alert(data);
+    } else {
+      console.log("Registered Successfully");
+      navigate("/login");
+    }
   };
 
   return (
-    <div>
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="firstName">firstName:</label>
-          <input
-            type="text"
-            id="firstName"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="LastName">LastName:</label>
-          <input
-            type="text"
-            id="LastName"
-            name="LastName"
-            value={formData.LastName}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="username">Username:</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button type="submit">Register</button>
-      </form>
-    </div>
+    <Container maxWidth="xs">
+      <RegisterContainer>
+        <Typography variant="h4">Register</Typography>
+        <Form onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="First Name"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Last Name"
+                name="LastName"
+                value={formData.LastName}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Username"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Password"
+                name="password"
+                type="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <SubmitButton type="submit" variant="contained">
+                Register
+              </SubmitButton>
+            </Grid>
+          </Grid>
+        </Form>
+        <Box mt={2}>
+          <LinkStyled to="/login">
+            Already have an account? Sign in Instead
+          </LinkStyled>
+        </Box>
+        {/* Simulating registration loader */}
+        <LoaderContainer>
+          <CircularProgress />
+        </LoaderContainer>
+      </RegisterContainer>
+    </Container>
   );
 };
 

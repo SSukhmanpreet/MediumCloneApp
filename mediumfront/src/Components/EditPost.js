@@ -1,19 +1,10 @@
 import React, { useState } from "react";
 
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 
 const EditPost = ({ post, onUpdatePost, onCloseEditForm }) => {
   const { id } = useParams();
   const [editedPost, setEditedPost] = useState({ ...post });
-
-  // Function to handle form input changes
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setEditedPost((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
 
   // Function to handle form submission
   const handleSubmit = (event) => {
@@ -21,44 +12,121 @@ const EditPost = ({ post, onUpdatePost, onCloseEditForm }) => {
     onUpdatePost(editedPost);
   };
 
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setEditedPost({ ...editedPost, [name]: value });
+  };
+
+  const handleCancelEdit = () => {
+    setEditedPost(null);
+    window.location.href = `/userposts`;
+  };
+  const updatePostData = async (e) => {
+    e.preventDefault();
+    console.log(editedPost);
+    window.location.href = `/userposts`;
+    // const formData = new FormData();
+    // formData.append("updatePost", editedPost);
+    // axios.patch(`/posts/${id}`, formData)
+    //     .then(() => {
+    //         alert('Post Updated in Database')
+    //         window.location.href = `/userposts`;
+    //     })
+    //     .catch((err) => {
+    //         console.log(err);
+    //     })
+  };
+
+  // const getPostData = async () => {
+  //     const res = await fetch(`/posts/${id}`, {
+  //         method: "GET",
+  //         headers: {
+  //             "Content-Type": "application/json"
+  //         }
+  //     });
+
+  //     const data = await res.json();
+
+  //     if (res.status === 404 || !data) {
+  //         // console.log("Error while getting data in post details");
+  //     } else {
+  //         // setPostData(data);
+  //         console.log("data");
+  //         console.log(data);
+  //         setEditedPost(data);
+  //     }
+  // };
+
+  // useEffect(async () => {
+  //     // getPostData();
+  //     // if (localStorage.getItem('token') === "undefined") {
+  //     //     alert("Please Sign In to continue");
+  //     //     window.location.href = '/userLogin';
+  //     // }
+  //     // else {
+  //     //     const givingToken = localStorage.getItem('token');
+  //     //     console.log("givingToken");
+  //     //     console.log(givingToken);
+  //     //     const response = await fetch(`/auth`, {
+  //     //         method: 'POST',
+  //     //         headers: {
+  //     //             'Content-Type': 'application/json',
+  //     //         },
+  //     //         body: JSON.stringify({
+  //     //             token: givingToken,
+  //     //         })
+  //     //     })
+  //     //     const data = await response.json()
+  //     //     // console.log(data.message)
+  //     //     if (response.status !== 200) {
+  //     //         alert(data.message)
+  //     //         window.location.href = '/userLogin'
+  //     //     }
+  //     // }
+  // }, []);
   return (
     <div>
       <h2>Edit Post</h2>
-      <form onSubmit={handleSubmit}>
+      <form className="edit-post-form">
         <div>
-          <label htmlFor="title">Title:</label>
+          <label>Title:</label>
           <input
             type="text"
-            id="title"
             name="title"
             value={editedPost.title}
-            onChange={handleChange}
-            required
+            onChange={handleInputChange}
           />
         </div>
         <div>
-          <label htmlFor="topic">topic:</label>
+          <label>Topic:</label>
           <input
             type="text"
-            id="topic"
             name="topic"
             value={editedPost.topic}
-            onChange={handleChange}
+            onChange={handleInputChange}
           />
         </div>
         <div>
-          <label htmlFor="text">text:</label>
+          <label>Image:</label>
           <input
             type="text"
-            id="text"
-            name="text"
-            value={editedPost.text}
-            onChange={handleChange}
+            name="image"
+            value={editedPost.image}
+            onChange={handleInputChange}
           />
         </div>
-        {/* Other form fields for editing the post */}
-        <button type="submit">Update Post</button>
-        <button type="button" onClick={onCloseEditForm}>
+        <div>
+          <label>Text:</label>
+          <textarea
+            name="text"
+            value={editedPost.text}
+            onChange={handleInputChange}
+          />
+        </div>
+        <button type="submit" onClick={updatePostData}>
+          Save Changes
+        </button>
+        <button className="cancelEdit-button" onClick={handleCancelEdit}>
           Cancel
         </button>
       </form>

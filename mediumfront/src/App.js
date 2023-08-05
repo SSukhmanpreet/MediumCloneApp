@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ShowAllPosts from "./Components/ShowAllPosts";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Register from "./Components/Register";
-
+import "./App.css";
 import Login from "./Components/Login";
 import UserProfile from "./Components/UserProfile";
 import TopPosts from "./Components/TopPosts";
@@ -11,9 +11,17 @@ import AddPost from "./Components/AddPost";
 import axios from "axios";
 import PostDetails from "./Components/PostDetails";
 import AuthorProfile from "./Components/AuthorProfile";
-import PostList from "./Components/PostLater";
+import PostLater from "./Components/PostLater";
+import EditPost from "./Components/EditPost";
+import UserPosts from "./Components/UserPosts";
+import Homepage from "./Components/Homepage";
+import SavedPosts from "./Components/PostLater";
+import EditProfile from "./Components/EditProfile";
+import Footer from "./Components/Footer";
 
 function App() {
+  const [posts, setPosts] = useState([]);
+
   // const sampleUser = {
   //   username: "sample-user-name",
   //   email: "sample-user-email",
@@ -58,7 +66,8 @@ function App() {
         comments: "5",
         topic: "Technol",
         text: "This is the content of post 1...",
-        img: "#",
+        image:
+          "https://fastly.picsum.photos/id/365/200/200.jpg?hmac=1d3GDxGN6ctXX3y8q4PA_hKu6fLOCEGbgeKZKJ8K8U8",
       },
       {
         id: "2",
@@ -69,7 +78,8 @@ function App() {
         comments: "8",
         topic: "Travel",
         text: "This is the content of post 2...",
-        img: "#",
+        image:
+          "https://fastly.picsum.photos/id/365/200/200.jpg?hmac=1d3GDxGN6ctXX3y8q4PA_hKu6fLOCEGbgeKZKJ8K8U8",
       },
     ],
     followedUsers: [
@@ -125,9 +135,10 @@ function App() {
   return (
     <Router>
       <div>
-        <Header />
+        <Header posts={posts} />
         <Routes>
-          <Route path="/" element={<ShowAllPosts />} />
+          <Route path="/" element={<Homepage />} />
+          <Route path="/allposts" element={<ShowAllPosts />} />
           <Route exact path="/add" element={<AddPost />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
@@ -136,15 +147,23 @@ function App() {
             path="/posts/:id"
             element={<PostDetails posts={sampleUser.posts} />}
           />
-          <Route exact path="/profile" element={<UserProfile user={user} />} />
+          <Route path="/userPosts" element={<UserPosts />} />
+          <Route path="/userProfile/editPost" element={<EditPost />} />
+          <Route
+            exact
+            path="/userProfile"
+            element={<UserProfile user={user} />}
+          />
           <Route
             exact
             path="/author/:id"
-            element={<AuthorProfile match={sampleUser.author.author} />}
+            element={<AuthorProfile author={sampleUser.author.author} />}
           />
-          <Route path="profile/saveLater" element={<PostList />} />
+          <Route path="/editProfile" element={<EditProfile user={user} />} />
+          <Route path="profile/saveLater" element={<PostLater />} />
           <Route />
         </Routes>
+        <Footer />
       </div>
     </Router>
   );

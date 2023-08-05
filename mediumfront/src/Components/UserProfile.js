@@ -1,9 +1,69 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import FollowButton from "./FollowButton";
 import { Link } from "react-router-dom";
-import PostItem from "./PostItem";
 
+import { styled } from "@mui/material/styles";
+import {
+  Typography,
+  TextField,
+  Button,
+  Container,
+  Box,
+  CircularProgress,
+  Grid, // Add this import
+} from "@mui/material";
+
+import FollowButton from "./FollowButton";
+import PostItem from "./PostItem";
+import UserPosts from "./UserPosts";
+
+const UserProfileContainer = styled("div")(({ theme }) => ({
+  marginTop: theme.spacing(4),
+}));
+
+const UserProfileForm = styled("form")(({ theme }) => ({
+  width: "100%",
+  marginTop: theme.spacing(2),
+  "& > div": {
+    marginBottom: theme.spacing(2),
+  },
+  "& button": {
+    marginTop: theme.spacing(3),
+    backgroundColor: theme.palette.primary.main,
+    color: "#fff",
+    "&:hover": {
+      backgroundColor: theme.palette.primary.dark,
+    },
+  },
+}));
+
+const UserStatsContainer = styled("div")(({ theme }) => ({
+  marginBottom: theme.spacing(4),
+  "& p": {
+    marginBottom: theme.spacing(1),
+  },
+}));
+
+const UserPostsContainer = styled("div")(({ theme }) => ({
+  marginBottom: theme.spacing(4),
+}));
+
+const OtherAuthorsContainer = styled("div")(({ theme }) => ({
+  marginBottom: theme.spacing(4),
+  "& > div": {
+    marginBottom: theme.spacing(2),
+    "& h4": {
+      marginBottom: theme.spacing(1),
+    },
+    "& a": {
+      textDecoration: "none",
+      color: theme.palette.primary.main,
+      "&:hover": {
+        textDecoration: "underline",
+      },
+    },
+  },
+}));
 const UserProfile = ({ user }) => {
   const [userData, setUserData] = useState(user);
   const [savedPosts, setSavedPosts] = useState([]);
@@ -12,42 +72,64 @@ const UserProfile = ({ user }) => {
   const [otherAuthors, setOtherAuthors] = useState(user.followedUsers);
   const [author, setAuthor] = useState(user.author);
   console.log(user);
-  // useEffect(() => {
-  //   // Fetch user details from the backend using the JWT token
-  //   const token = localStorage.getItem("token");
-  //   if (token) {
-  //     axios
-  //       .get("/api/user/profile", {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       })
-  //       .then((response) => {
-  //         // Set user data
-  //         setUserData(response.data.user);
-  //         // Set user posts
-  //         setUserPosts(response.data.posts);
-  //       })
-  //       .catch((error) => {
-  //         // Handle error (e.g., invalid token, failed request, etc.)
-  //         console.error("Error fetching user data:", error);
-  //       });
-  //     axios
-  //       .get("/api/user/other_authors", {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       })
-  //       .then((response) => {
-  //         // Set other authors data
-  //         setOtherAuthors(response.data);
-  //       })
-  //       .catch((error) => {
-  //         // Handle error (e.g., invalid token, failed request, etc.)
-  //         console.error("Error fetching other authors data:", error);
-  //       });
-  //   }
-  // }, []);
+  // useEffect(async () => {
+  //     if (localStorage.getItem('token') === "undefined") {
+  //         alert("Please Sign In to continue");
+  //         window.location.href = '/userlogin';
+  //     }
+  //     else {
+  //         const givingToken = localStorage.getItem('token');
+  //         // console.log(givingToken)
+  //         const response = await fetch(`/auth`, {
+  //             method: 'POST',
+  //             headers: {
+  //                 'Content-Type': 'application/json',
+  //             },
+  //             body: JSON.stringify({
+  //                 token: givingToken,
+  //             })
+  //         })
+  //         const data = await response.json()
+  //         console.log(data.message);
+  //         if (response.status !== 200) {
+  //             alert(data.message);
+  //             window.location.href = '/userlogin';
+  //         }
+  //         else {
+  //             const res = await fetch(`/users/profile`, {
+  //                 method: 'POST',
+  //                 headers: {
+  //                     'Content-Type': 'application/json',
+  //                 },
+  //                 body: JSON.stringify({
+  //                     token: givingToken,
+  //                 })
+  //             })
+  //             // console.log("after fetch profile")
+
+  //             const data = await res.json();
+  //             console.log("data got");
+  //             console.log(data);
+
+  //             if (data) {
+  //                 setUserData(data);
+  //                 setUserPosts(data.posts);
+  //                 setFollowedUsers(data.followedUsers);
+  //             } else {
+  //                 // console.log("no data found");
+  //                 alert('Please sign in again');
+  //                 window.location.href = '/userlogin';
+  //             }
+  //         }
+  //     }
+  // }, [])
+  // const handleFollowUser = (userId) => {
+
+  //     setUser((prevUser) => ({
+  //         ...prevUser,
+  //         followedUsers: [...prevUser.followedUsers, userId],
+  //     }));
+  // };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -56,6 +138,27 @@ const UserProfile = ({ user }) => {
       [name]: value,
     }));
   };
+
+  const getUserData = async () => {
+    const mockURL = `https://52e49f36-7a43-4897-8fc0-b87cb414e40b.mock.pstmn.io`;
+    const res = await fetch(`${mockURL}/posts`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await res.json();
+    if (res.status === 404) {
+      console.log("Error 404:Home route");
+    } else {
+      await setUserData(data);
+    }
+  };
+  useEffect(() => {
+    console.log("loaded");
+    getUserData();
+  }, []);
+
   const handleFollowToggle = (authorId, isFollowing) => {
     // Send follow/unfollow request to the backend using the JWT token
     const token = localStorage.getItem("token");
@@ -113,73 +216,78 @@ const UserProfile = ({ user }) => {
   };
   return (
     <>
-      <div>
-        <h2>User Profile</h2>
-        <Link to={`/user/saveLater`}>View Profile</Link>
-        <form onSubmit={handleSubmit}>
-          {/* Display user details */}
-          <div>
-            <label htmlFor="username">Username:</label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              value={userData.username}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="email">Email:</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={userData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          {/* Add other profile fields here */}
-          <button type="submit">Save Profile</button>
-        </form>
+      <Container maxWidth="md">
+        <UserProfileContainer>
+          {/* <Typography variant="h2">User Profile</Typography>
+          <Link to={`/user/saveLater`}>View Profile</Link>
 
-        {/* Display user stats */}
-        <div>
-          <h3>User Stats</h3>
-          <p>Total Likes: {userData.totalLikes}</p>
-          <p>Total Comments: {userData.totalComments}</p>
-          <p>Total Views: {userData.totalViews}</p>
-        </div>
+          <UserStatsContainer>
+            <Typography variant="h3">User Stats</Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={4}>
+                <Typography variant="body1">
+                  Total Likes: {userData.totalLikes}
+                </Typography>
+              </Grid>
+              <Grid item xs={4}>
+                <Typography variant="body1">
+                  Total Comments: {userData.totalComments}
+                </Typography>
+              </Grid>
+              <Grid item xs={4}>
+                <Typography variant="body1">
+                  Total Views: {userData.totalViews}
+                </Typography>
+              </Grid>
+            </Grid>
+          </UserStatsContainer> */}
 
-        {/* Display user-specific posts with stats */}
-        <div>
-          <h3>User Posts</h3>
-          {userPosts.map((post) => (
-            <PostItem
-              post={post}
-              onSaveForLater={handleSaveForLater}
-              isSaved={savedPosts.some((savedPost) => savedPost.id === post.id)}
-            />
-          ))}
-        </div>
-        {/* Display other authors */}
-        <div>
-          <h3>Other Authors</h3>
-          {otherAuthors.map((author) => (
-            <div key={author.authorId}>
-              <h4>{author.username}</h4>
-              <Link to={`/author/${author.authorId}`}>View Profile</Link>
-              {/* Pass the necessary props to FollowButton */}
-              <FollowButton
-                authorId={author.id}
-                isFollowing={author.isFollowing}
-                onFollowToggle={handleFollowToggle}
-              />
+          <UserProfileForm onSubmit={handleSubmit}>
+            {/* Display user details */}
+            {/* <div>
+              <Typography variant="h5">
+                Username: <span>{userData.username}</span>
+              </Typography>
             </div>
-          ))}
-        </div>
-      </div>
+            <div>
+              <Typography variant="h5">
+                Email: <span>{userData.email}</span>
+              </Typography>
+            </div> */}
+            {/* Add other profile fields here */}
+            <Link to="/editProfile">
+              <Button type="submit" variant="contained" color="primary">
+                Edit Profile
+              </Button>
+            </Link>{" "}
+          </UserProfileForm>
+
+          {/* Display user-specific posts with stats */}
+          <UserPostsContainer>
+            <Typography variant="h3">User Posts</Typography>
+            {userPosts.map((post) => (
+              <UserPosts isNo={false} />
+            ))}
+          </UserPostsContainer>
+
+          {/* Display other authors */}
+          <OtherAuthorsContainer>
+            <Typography variant="h3">Other Authors</Typography>
+            {otherAuthors.map((author) => (
+              <div key={author.authorId}>
+                <Typography variant="h4">{author.username}</Typography>
+                <Link to={`/author/${author.authorId}`}>View Profile</Link>
+                {/* Pass the necessary props to FollowButton */}
+                <FollowButton
+                  authorId={author.id}
+                  isFollowing={author.isFollowing}
+                  onFollowToggle={handleFollowToggle}
+                />
+              </div>
+            ))}
+          </OtherAuthorsContainer>
+        </UserProfileContainer>
+      </Container>
     </>
   );
 };
