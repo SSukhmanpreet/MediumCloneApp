@@ -2,32 +2,41 @@ class Api::V1::ArticlesController < ApplicationController
   # before_action :set_article, only: %i[ show update destroy ]
   # skip_before_action :verify_authenticity_token
   before_action :authenticate_user, only: [:create]
+  before_action :authenticate_request, only: [:save_for_later]
   # GET /articles
   def index
-    def index
-      @articles = Article.all
-  
-      # Filter by author if author param is provided
-      @articles = @articles.where(author: params[:author]) if params[:author].present?
-  
-      # Filter by date if date param is provided
-      @articles = @articles.where("DATE(created_at) = ?", params[:date]) if params[:date].present?
-  
-      # Filter by number of likes if likes param is provided
-      @articles = @articles.where(post_likes: params[:post_likes]) if params[:post_likes].present?
-  
-      # Filter by number of comments if comments param is provided
-      @articles = @articles.where(post_comments: params[:post_comments]) if params[:post_comments].present?
-  
-      render json: @articles
-    end
+    @articles = Article.all
+
+    # Filter by author if author param is provided
+    @articles = @articles.where(author: params[:author]) if params[:author].present?
+
+    # Filter by date if date param is provided
+    @articles = @articles.where("DATE(created_at) = ?", params[:date]) if params[:date].present?
+
+    # Sort by number of likes if sort_likes param is provided
+    @articles = @articles.order(post_likes: :desc) if params[:sort_likes].present?
+
+    # Sort by number of comments if sort_comments param is provided
+    @articles = @articles.order(post_comments: :desc) if params[:sort_comments].present?
+
+    render json: @articles
   end
   def create
-    @article = Article.new(article_params)
+    @article = Article.create(title: params[:title], topic: params[:topic],  file: params[:file], description: params[:description], author: params[:author], user_id: params[:user_id], published_at: params[:published_at])
+    # @article = current_user.articles.build(article_params)
+    
+    word_count = @article.description.split.size
+    reading_speed = 200 # words per minute (adjust as needed)
+    minutes = (word_count.to_f / reading_speed).ceil
+    @article.minutes_to_read = minutes
+
+    @article.post_likes = 0
+    @article.post_comments = 0
+
     if @article.save
-       
+       render json: @article
     else
-    render :new
+    render json: Article.all
     end
   end
 
@@ -36,7 +45,22 @@ class Api::V1::ArticlesController < ApplicationController
   end
   def update 
       article1 = Article.find_by(id: params[:id])
-      article1.update(title: params[:title], topic: params[:topic], file: params[:file], description: params[:description], author: params[:author])
+      article1.update(article_params)
+      # word_count = @article1.description.split.size
+      # reading_speed = 200 # words per minute (adjust as needed)
+      # minutes = (word_count.to_f / reading_speed).ceil
+      # article1.minutes_to_read = minutes
+      # render json: @article1.published_at
+      if article1.published_at.blank?
+        ArticleRevision.create(
+          article: article1,
+          title: article1.title,
+          topic: article1.topic,
+          description: article1.description,
+          author: article1.author
+        )
+      end
+
       render json: Article.all()
   end
 
@@ -49,10 +73,60 @@ class Api::V1::ArticlesController < ApplicationController
     render json: @articles
   end
 
+  def like
+    @article = Article.find(params[:id])
+    @article.increment!(:post_likes)
+    render json: @article, status: :ok
+  end
+
+  def comment
+    @article = Article.find(params[:id])
+    @article.increment!(:post_comments)
+    render json: @article, status: :ok
+  end
+
+  def recommended_posts
+    user = current_user
+    interested_topics = user.profile.interested_topics
+    @recommended_posts = Article.where(topic: interested_topics).where.not(user_id: user.id)
+
+    render json: @recommended_posts, status: :ok
+  end
+
+  def top_posts
+    @top_posts = Article.order(post_likes: :desc, post_comments: :desc).limit(5)
+
+    render json: @top_posts, status: :ok
+  end
+
+  def articles_by_topic
+    @articles = Article.where(topic: params[:topic])
+
+    render json: @articles, status: :ok
+  end
+
+  def drafts
+    @articles = Article.draft
+
+    render json: @articles, status: :ok
+  end
+
+  def revisions
+    @article = Article.find(params[:id])
+    @revisions = @article.article_revisions
+    render json: @revisions
+  end
+
+  def save_for_later
+    article = Article.find(params[:id])
+    (@current_user.profile.save_for_later).push(article.id)
+    render json: @current_user.profile
+  end
+
   private
 
   def article_params
-      params.require(:article).permit(:title, :topic, :file, :description, :author) # Or :files for multiple attachments
+    params.require(:article).permit(:title, :topic, :description, :author, :user_id, :published_at)
   end
 
   def authenticate_user
@@ -62,5 +136,22 @@ class Api::V1::ArticlesController < ApplicationController
     unless payload
       render json: { error: 'Unauthorized' }, status: :unauthorized
     end
+  end
+
+  def authenticate_request
+      token = request.headers['Authorization']
+      if token
+        # user = decode_and_verify_token(token)
+        user = User.find_by(id: token.split(' ')[1])
+      #   render json: user
+        if user
+          @current_user = user
+          # render json: @current_user
+        else
+          render json: { error: 'Unauthorized' }, status: :unauthorized
+        end
+      else
+        render json: { error: 'Unauthorized' }, status: :unauthorized
+      end
   end
 end

@@ -9,7 +9,7 @@ class AuthenticationController < ApplicationController
 
         if user&.authenticate(params[:password])
         # Optionally, you can generate a JWT token for the user here
-        # token = your_jwt_generation_method(user)
+        # token = generate_token(user)
         # render json: { token: token }, status: :ok
             # Rails.logger.debug("Debug", user)
             if user.profile.present?

@@ -14,6 +14,17 @@ Rails.application.routes.draw do
   delete 'delete', to: 'api/v1/articles#delete'
   put 'update', to: 'api/v1/articles#update'
 
+  get 'recommended_posts', to: 'api/v1/articles#recommended_posts'
+  get 'top_posts', to: 'api/v1/articles#top_posts'
+  get 'articles_by_topic', to: 'api/v1/articles#articles_by_topic'
+
+  get 'drafts', to: 'api/v1/articles#drafts'
+
+  get 'revisions', to: 'api/v1/articles#revisions'
+
+  get 'save_for_later', to: 'api/v1/articles#save_for_later'
+  
+
   # route for login
   resources :users, only: [:create]
   post '/login', to: 'authentication#create'
@@ -27,6 +38,9 @@ Rails.application.routes.draw do
     member do
       post 'follow'
       delete 'unfollow'
+    end
+    collection do
+      get :my_profile
     end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_04_053045) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_05_075502) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -39,6 +39,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_04_053045) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "article_revisions", force: :cascade do |t|
+    t.integer "article_id", null: false
+    t.string "title"
+    t.string "topic"
+    t.text "description"
+    t.string "author"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["article_id"], name: "index_article_revisions_on_article_id"
+  end
+
   create_table "articles", force: :cascade do |t|
     t.string "title"
     t.string "topic"
@@ -48,15 +59,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_04_053045) do
     t.datetime "updated_at", null: false
     t.integer "post_likes"
     t.integer "post_comments"
+    t.integer "user_id"
+    t.integer "minutes_to_read"
+    t.datetime "published_at"
+    t.index ["user_id"], name: "index_articles_on_user_id"
   end
 
-  create_table "follows", force: :cascade do |t|
-    t.integer "follower_id", null: false
-    t.integer "followee_id", null: false
+  create_table "followers", force: :cascade do |t|
+    t.integer "follower_id"
+    t.integer "following_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["followee_id"], name: "index_follows_on_followee_id"
-    t.index ["follower_id"], name: "index_follows_on_follower_id"
   end
 
   create_table "profiles", force: :cascade do |t|
@@ -65,6 +78,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_04_053045) do
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "interested_topics"
+    t.integer "save_for_later"
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
@@ -78,7 +93,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_04_053045) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "follows", "followees"
-  add_foreign_key "follows", "followers"
+  add_foreign_key "article_revisions", "articles"
+  add_foreign_key "articles", "users"
   add_foreign_key "profiles", "users"
 end

@@ -4,7 +4,15 @@ class User < ApplicationRecord
     has_one :profile
     has_secure_password
 
-    has_many :articles, foreign_key: :author_id
+    has_many :articles
+
+    has_many :follower_relationships, class_name: 'Follower', foreign_key: 'follower_id'
+    has_many :following_relationships, class_name: 'Follower', foreign_key: 'following_id'
+
+    has_many :followers, through: :following_relationships, source: :follower_user
+    has_many :following, through: :follower_relationships, source: :following_user
+
+
 
     def generate_token
         payload = { user_id: id, exp: 24.hours.from_now.to_i }
@@ -17,15 +25,16 @@ class User < ApplicationRecord
         nil
     end
 
-    def follow(user)
-        followees << user
+    def follow(other_user)
+      following << other_user
     end
-
-    def unfollow(user)
-        followees.delete(user)
+  
+    def unfollow(other_user)
+      following.delete(other_user)
     end
-
-    def following?(user)
-        followees.include?(user)
+  
+    def following?(other_user)
+      following.include?(other_user)
     end
+  
 end
