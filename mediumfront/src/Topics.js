@@ -23,7 +23,15 @@ const AllTopics = () => {
         ) {
             console.log("Error 404: while getting data in home ");
         } else {
-            setTopics(topicsArray);
+            const topicsArray = data.reduce((topics, post) => {
+                return topics.concat(post.topic);
+            }, [])
+            // Create a Set to store distinct strings
+            const uniqueTopicsSet = new Set(topicsArray);
+            // Convert the Set back to an array using the spread operator
+            const uniqueTopicsArray = [...uniqueTopicsSet]; 
+            const sortedTopics = [...uniqueTopicsArray].sort();
+            setTopics(sortedTopics);
         }
     };
     //useeffect to fetch all posts

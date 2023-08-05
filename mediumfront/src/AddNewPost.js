@@ -113,6 +113,7 @@ const AddNewPost = () => {
 
             <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
                 <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
+                    <h1>Add Post</h1>
                     <form>
                         <div>
                             <TextField sx={{ margin: "20px 10px", width: "500px" }}

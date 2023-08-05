@@ -11,7 +11,7 @@ function Copyright() {
     <Typography variant="body2" color="text.secondary">
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+        Medium-Clone
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -56,9 +56,9 @@ export default function FooterComponent() {
           }}
         >
           <Container maxWidth="sm">
-            <Typography variant="body1">
-              My sticky footer can be found here.
-            </Typography>
+            {/* <Typography variant="body1">
+              
+            </Typography> */}
             <Copyright />
           </Container>
         </Box>

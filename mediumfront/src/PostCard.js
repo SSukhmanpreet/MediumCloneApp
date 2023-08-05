@@ -79,7 +79,9 @@ export default function PostCard(props) {
         <CardMedia
           component="img"
           sx={{ width: 151 }}
-          image={`/${props.image}`}
+          // image={`/no_image2.png`}
+          // image={`1 H-X-VqZD_CVDXiXqtEippA.webp`}
+          image={props.image}
           alt="Live from space album cover"
         />
       </Box>

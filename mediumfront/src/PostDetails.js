@@ -83,9 +83,9 @@ const PostDetails = ({ posts }) => {
                 <h1 className='postHeading'>{currentPost.title}</h1>
                 <p className='postuser'>user: {currentPost.user}</p>
                 <p className='postDate'>Date: {currentPost.date}</p>
-                <img className='postimage' src='/no_image2.png' alt="image here"></img>
+                <img className='postimage' src={'/'+ currentPost.image} alt="image here"></img>
                 <p className='postText'>Text: {currentPost.text}</p>
-                <p className='postTopic'>Topic: {currentPost.topic}</p>
+                <p className='postTopic'>Topic: {currentPost.topic+" "}</p>
                 <p className='postTopic'>Reading Time: {currentPost.reading_time_mins + " mins"}</p>
                 <br />
                 <button className='postLike-button'>Likes: {currentPost.likes}</button>

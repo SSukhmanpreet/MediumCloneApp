@@ -130,7 +130,6 @@ export default function UserSignUp() {
         email: '',
         password: '',
     });
-    const [confirmPassword, setConfirmPassword] = useState([]);
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setUser({ ...user, [name]: value });
