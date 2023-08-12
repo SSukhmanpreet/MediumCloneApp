@@ -1,56 +1,44 @@
 Rails.application.routes.draw do
-  namespace :api do
-    namespace :v1 do
-      resources :articles
-    end
-  end
+  get '/current_user', to: 'current_user#index'
+  devise_for :users, path:'' , path_names:{
+    sign_in: 'login',
+    sign_out: 'logout',
+    registration: 'signup'
+  },
+  controllers: {
+    sessions: 'users/sessions',
+    registrations: 'users/registrations',
+    articles: 'articles'
+  }
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
   # root "articles#index"
 
+  get '/articles', to: "articles#home"
 
-  # get all articles -> if given parameter filters data accordingly
-  root "api/v1/articles#index"
+  post 'create', to: "articles#create"
 
-  # search articles -> user can search by providing anything from title, author, topic
-  get 'search', to: 'api/v1/articles#search'
+  delete 'delete', to: "articles#delete"
 
-  # create article
-  post 'create', to: 'api/v1/articles#create'
+  get 'search', to: "articles#search"
 
-  # delete article
-  delete 'delete', to: 'api/v1/articles#delete'
+  put 'update', to: "articles#update"
 
-  # update article
-  put 'update', to: 'api/v1/articles#update'
+  get 'like', to: "articles#like"
+  get 'comment', to: "articles#comment"
 
-  # recommended posts
-  get 'recommended_posts', to: 'api/v1/articles#recommended_posts'
+  get 'by_topic', to: "articles#articles_by_topic"
 
-  # top posts
-  get 'top_posts', to: 'api/v1/articles#top_posts'
+  get 'top_posts', to: "articles#top_posts"
 
-  # articles by topic
-  get 'articles_by_topic', to: 'api/v1/articles#articles_by_topic'
+  get 'recommended_posts', to: "articles#recommended_posts"
 
-  # get all drafts
-  get 'drafts', to: 'api/v1/articles#drafts'
+  get 'save_for_later', to: "articles#save_for_later"
 
-  # get all revisions
-  get 'revisions', to: 'api/v1/articles#revisions'
+  get 'drafts', to: "articles#drafts"
 
-  # articles saved for later for each user
-  get 'save_for_later', to: 'api/v1/articles#save_for_later'
-  
-
-  # route for login
-  resources :users, only: [:create]
-  post '/login', to: 'authentication#create'
-  get '/login', to: 'authentication#new' # Route to render the login form view
-
-  #route for register
-  post 'register', to: 'registration#create'
+  get 'revisions', to: "articles#revisions"
 
   # route for follow and unfollow
   resources :profiles, only: [:show] do
@@ -60,6 +48,14 @@ Rails.application.routes.draw do
     end
     collection do
       get :my_profile
+      post :create_profile
     end
   end
+
+  resources :playlists, only: [:index, :create, :show] do
+    member do
+      post 'share'
+    end
+  end
+  post 'playlists/add_article', to: 'playlists#add_article'
 end
