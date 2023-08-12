@@ -58,4 +58,8 @@ Rails.application.routes.draw do
     end
   end
   post 'playlists/add_article', to: 'playlists#add_article'
+
+
+  post 'create_payment', to: 'payments#create_payment'
+  post 'confirm_payment', to: 'payments#confirm_payment'
 end
