@@ -118,8 +118,8 @@ class ArticlesController < ApplicationController
     
     def save_for_later
         article = Article.find(params[:id])
-        current_user.profile.save_for_later << article.id
-        render json: current_user.profile
+        current_user.saved_articles.create(article: article)
+        render json: current_user.saved_articles
     end
     
     private

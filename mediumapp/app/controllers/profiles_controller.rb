@@ -2,7 +2,7 @@ class ProfilesController < ApplicationController
 
     def create_profile
         @user = current_user
-        @profile = Profile.create(user: @user, bio: params[:bio], name: params[:name], interested_topics: params[:interested_topics])
+        @profile = Profile.create(user: @user, bio: params[:bio], name: params[:name], interested_topics: params[:interested_topics], save_for_later: params[:save_for_later])
         if @profile.save
             render json: @user.profile
         else 

@@ -9,6 +9,8 @@ class User < ApplicationRecord
     has_many :articles
     has_many :playlists
 
+    has_many :saved_articles
+
     has_many :follower_relationships, class_name: 'Follower', foreign_key: 'follower_id'
     has_many :following_relationships, class_name: 'Follower', foreign_key: 'following_id'
 
