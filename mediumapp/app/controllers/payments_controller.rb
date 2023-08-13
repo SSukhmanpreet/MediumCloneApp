@@ -5,7 +5,7 @@ class PaymentsController < ApplicationController
 
 # order = Razorpay::Order.create amount: 50000, currency: 'INR', receipt: 'TEST'
     def create_payment
-        amount = 1000 # Amount in paise (10 rupees)
+        amount = params[:amount] # Amount in paise (10 rupees)
         order = Razorpay::Order.create(amount: amount, currency: 'INR')
         render json: order
     end
