@@ -59,7 +59,10 @@ export default function PostCard(props) {
         <Box sx={{ flex: 1 }}>
           <CardContent>
             <Typography gutterBottom variant="h5" component="div">
-              {props.title}.
+              {props.title}
+            </Typography>
+            <Typography gutterBottom variant="body2" color="text.secondary" component="div">
+              Topic: {props.topic}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {props.text.split(' ').slice(0, 35).join(' ')}...
@@ -81,8 +84,8 @@ export default function PostCard(props) {
           sx={{ width: 151 }}
           // image={`/no_image2.png`}
           // image={`1 H-X-VqZD_CVDXiXqtEippA.webp`}
-          image={props.image}
-          alt="Live from space album cover"
+          image={props.image_url}
+          alt="Post Image"
         />
       </Box>
     </Card>

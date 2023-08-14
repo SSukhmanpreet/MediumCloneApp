@@ -23,38 +23,38 @@ const EditPost = ({ posts }) => {
 
     //adding data to database
     const updatePostData = async (e) => {
-        e.preventDefault();
-        console.log(editedPost);
-        window.location.href = `/userposts`;
-        const mockURL = `https://7c5df6d5-e40e-40f9-bdd2-4e8319aa7075.mock.pstmn.io`;
-        axios.patch(`${mockURL}/posts/?${id}`, editedPost)
-            .then(() => {
-                alert('Post Updated in Database')
-                window.location.href = `/userposts`;
-            })
-            .catch((err) => {
-                console.log(err);
-            })
+        // e.preventDefault();
+        // console.log(editedPost);
+        // window.location.href = `/userposts`;
+        // const mockURL = `https://7c5df6d5-e40e-40f9-bdd2-4e8319aa7075.mock.pstmn.io`;
+        // axios.patch(`${mockURL}/posts/?${id}`, editedPost)
+        //     .then(() => {
+        //         alert('Post Updated in Database')
+        //         window.location.href = `/userposts`;
+        //     })
+        //     .catch((err) => {
+        //         console.log(err);
+        //     })
     };
 
     const getPostData = async () => {
-        const mockURL = ``;
-        const res = await fetch(`https://7c5df6d5-e40e-40f9-bdd2-4e8319aa7075.mock.pstmn.io/posts/?${id}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
+        // const mockURL = ``;
+        // const res = await fetch(`https://7c5df6d5-e40e-40f9-bdd2-4e8319aa7075.mock.pstmn.io/posts/?${id}`, {
+        //     method: "GET",
+        //     headers: {
+        //         "Content-Type": "application/json"
+        //     }
+        // });
 
-        // console.log(await res.json());
-        const data = await res.json();
+        // // console.log(await res.json());
+        // const data = await res.json();
 
-        if (res.status === 404 || !data) {
-            console.log("Error while getting data in post details");
-        } else {
-            // setPostData(data);
-            setEditedPost(data[1]);
-        }
+        // if (res.status === 404 || !data) {
+        //     console.log("Error while getting data in post details");
+        // } else {
+        //     // setPostData(data);
+        //     setEditedPost(data[1]);
+        // }
     };
 
     useEffect(() => {

@@ -1,117 +1,3 @@
-// import React, { useState } from 'react';
-// import axios from 'axios';
-
-// const UserSignUp = () => {
-//     const [user, setUser] = useState({
-//         username: '',
-//         first_name: '',
-//         last_name: '',
-//         email: '',
-//         password: '',
-//     });
-
-//     const handleInputChange = (event) => {
-//         const { name, value } = event.target;
-//         setUser({ ...user, [name]: value });
-//     };
-//     const registerUser = async (event) => {
-//         event.preventDefault();
-//         console.log("onsubmit");
-//         console.log(user);
-//         window.location.href = '/userLogin';
-//         // const response = await fetch(`/users`, {
-//         //     method: 'POST',
-//         //     headers: {
-//         //         'Content-Type': 'application/json',
-//         //     },
-//         //     withCredentials: true,
-//         //     body: JSON.stringify(user),
-//         // });
-//         // console.log("after fetch")
-
-//         // const data = await response.json()
-
-//         // if (response.status === 404 || !data) {
-//         //     console.log("error while pushing data to database");
-//         //     alert(data);
-//         // } else {
-//         //     alert("Signed Up Successfully");
-//         //     window.location.href = '/userLogin';
-//         // }
-//     }
-//     return (
-//         <div><h1>User Registration</h1>
-//             <form>
-//                 <div>
-//                     <label>Username:</label>
-//                     <input
-//                         type="text"
-//                         name="username"
-//                         value={user.username}
-//                         onChange={handleInputChange}
-//                     />
-//                 </div>
-//                 <div>
-//                     <label>First Name:</label>
-//                     <input
-//                         type="text"
-//                         name="first_name"
-//                         value={user.first_name}
-//                         onChange={handleInputChange}
-//                     />
-//                 </div>
-//                 <div>
-//                     <label>Last Name:</label>
-//                     <input
-//                         type="text"
-//                         name="last_name"
-//                         value={user.last_name}
-//                         onChange={handleInputChange}
-//                     />
-//                 </div>
-//                 <div>
-//                     <label>Email:</label>
-//                     <input
-//                         type="email"
-//                         name="email"
-//                         value={user.email}
-//                         onChange={handleInputChange}
-//                     />
-//                 </div>
-//                 <div>
-//                     <label>Password:</label>
-//                     <input
-//                         type="password"
-//                         name="password"
-//                         value={user.password}
-//                         onChange={handleInputChange}
-//                     />
-//                 </div>
-//                 {/* <div>
-//                     <label>Confirm Password:</label>
-//                     <input
-//                         type="text"
-//                         name="ConfirmPassword"
-//                         value={user.ConfirmPassword}
-//                         onChange={handleInputChange}
-//                     />
-//                 </div> */}
-//                 <div className="signInButton">
-//                     {/* <Button type='submit' onClick={registerUser} variant="contained">SIGN UP NOW</Button> */}
-//                     <button type='submit' onClick={registerUser} value='SIGN UP NOW'>Register</button>
-//                 </div>
-//                 <button>Sign In Instead</button>
-//             </form>
-//         </div>
-//     );
-// };
-
-// export default UserSignUp;
-
-
-
-
-
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -122,58 +8,64 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useState } from 'react';
+
 export default function UserSignUp() {
-    const [user, setUser] = useState({
-        username: '',
-        first_name: '',
-        last_name: '',
-        email: '',
-        password: '',
-    });
-    const handleInputChange = (event) => {
-        const { name, value } = event.target;
-        setUser({ ...user, [name]: value });
-    };
+    const [firstname, setFirstname] = useState('');
+    const [lastname, setLastname] = useState('');
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordRepeat, setPasswordRepeat] = useState('');
+    const [errorSignUp, setErrorSignUp] = useState('');
+
     const registerUser = async (event) => {
         event.preventDefault();
         console.log("onsubmit");
-        console.log(user);
-        // window.location.href = '/userLogin';
-        const mockURL = `https://7c5df6d5-e40e-40f9-bdd2-4e8319aa7075.mock.pstmn.io`;
-        const response = await fetch(`${mockURL}/users`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            withCredentials: true,
-            body: JSON.stringify(user),
-        });
-        console.log("after fetch");
+        try {
+            if (!username || !email || !password || !passwordRepeat) {
+                setErrorSignUp('All fields are required');
+                return;
+            }
 
-        const data = await response.json()
-        console.log("data");
-        console.log(data);
-        if (response.status === 404 || !data) {
-            console.log("error while pushing data to database");
-            alert(data);
-        } else {
-            alert("Created User Successfully. Please Sign In to continue.");
-            window.location.href = '/userLogin';
-        }
-    }
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-    };
-    const handleConfirmPassword = (e) => {
-        if (e.target.value !== user.password) {
-            console.log("The passwords do not match");
-        } else {
-            alert("Passwords Match!");
+            if (password !== passwordRepeat) {
+                setErrorSignUp('Passwords do not match');
+                return;
+            }
+
+            const response = await fetch('http://127.0.0.1:3003/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                },
+                body: JSON.stringify({
+                    user: { username, email, password },
+                }),
+            });
+
+            const authorizationHeader = response.headers.get('Authorization');
+
+            if (authorizationHeader !== null) {
+                localStorage.Authorization = authorizationHeader;
+                //   props.setAuthorization(authorizationHeader);
+            }
+
+            const data = await response.json();
+
+            if (data.status && data.status.code === 200) {
+                setUsername('');
+                setEmail('');
+                setPassword('');
+                setPasswordRepeat('');
+                setErrorSignUp('');
+                console.log("user created successfully");
+                alert(data.status.message);
+                window.location.href='/'
+            } else {
+                setErrorSignUp(data.status ? data.status.message : 'An error occurred');
+            }
+        } catch (error) {
+            console.error('Error:', error);
         }
     }
     return (
@@ -190,7 +82,7 @@ export default function UserSignUp() {
                 <Typography component="h1" variant="h5">
                     Sign up
                 </Typography>
-                <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                <Box component="form" sx={{ mt: 3 }}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
                             <TextField
@@ -203,9 +95,9 @@ export default function UserSignUp() {
                                 autoFocus
                                 type="text"
                                 name="first_name"
-                                value={user.first_name}
-                                onChange={handleInputChange}
-                            />
+                                value={firstname}
+                                onChange={(e) => setFirstname(e.target.value)}
+                                />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField
@@ -217,9 +109,9 @@ export default function UserSignUp() {
                                 autoComplete="family-name"
                                 type="text"
                                 name="last_name"
-                                value={user.last_name}
-                                onChange={handleInputChange}
-                            />
+                                value={lastname}
+                                onChange={(e) => setLastname(e.target.value)}
+                                />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
@@ -231,8 +123,8 @@ export default function UserSignUp() {
                                 autoComplete="email"
                                 type="text"
                                 name="username"
-                                value={user.username}
-                                onChange={handleInputChange}
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -245,8 +137,8 @@ export default function UserSignUp() {
                                 autoComplete="email"
                                 type="email"
                                 name="email"
-                                value={user.email}
-                                onChange={handleInputChange}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                         </Grid>
 
@@ -261,8 +153,8 @@ export default function UserSignUp() {
                                 autoComplete="new-password"
                                 type="password"
                                 name="password"
-                                value={user.password}
-                                onChange={handleInputChange}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                             />
                         </Grid>
 
@@ -277,11 +169,12 @@ export default function UserSignUp() {
                                 autoComplete="new-password"
                                 type="password"
                                 name="password"
-                                // value={confirmPassword}
-                                onKeyUp={(e) => { handleConfirmPassword(e) }}
+                                value={passwordRepeat}
+                                onChange={(e) => setPasswordRepeat(e.target.value)}
                             />
                         </Grid>
                     </Grid>
+                    {errorSignUp ? <div style={{color: "red"}}className='error'>{errorSignUp+"."}</div> : null}
                     <Button
                         // type="submit"
                         fullWidth

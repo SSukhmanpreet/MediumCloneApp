@@ -5,34 +5,42 @@ const AllTopics = () => {
     const [topics, setTopics] = useState([]);
     //function to fetch all posts
     const getAllPostsData = async () => {
-        const mockURL = `https://7c5df6d5-e40e-40f9-bdd2-4e8319aa7075.mock.pstmn.io`;
-        const res = await fetch(`${mockURL}/posts`, {
+        fetch(`http://127.0.0.1:3003/?page=1&books_per_page=100000`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
             }
-        });
-        const data = await res.json();
-        console.log("data");
-        console.log(data);
-        const topicsArray = data.reduce((topics, post) => {
-            return topics.concat(post.topic);
-        }, [])
-        if (res.status === 404
-            // || !data
-        ) {
-            console.log("Error 404: while getting data in home ");
-        } else {
-            const topicsArray = data.reduce((topics, post) => {
-                return topics.concat(post.topic);
-            }, [])
-            // Create a Set to store distinct strings
-            const uniqueTopicsSet = new Set(topicsArray);
-            // Convert the Set back to an array using the spread operator
-            const uniqueTopicsArray = [...uniqueTopicsSet]; 
-            const sortedTopics = [...uniqueTopicsArray].sort();
-            setTopics(sortedTopics);
-        }
+        })
+            .then(response => {
+                console.log("in then");
+                console.log(response);
+                if (!response.ok) {
+                    // console.log("response not ok");
+                    // console.log(response);
+                    throw new Error('Network response was not ok. Could not fetch data for that resource');
+                }
+                // console.log("response ok");
+                // console.log(response);
+                return response.json();
+            })
+            .then(data => {
+                // const data = res.json();
+                console.log("data");
+                console.log(data);
+                // console.log(data[1].number_of_comments);
+                const topicsArray = data.reduce((topics, post) => {
+                    return topics.concat(post.topic);
+                }, [])
+                // Create a Set to store distinct strings
+                const uniqueTopicsSet = new Set(topicsArray);
+                // Convert the Set back to an array using the spread operator
+                const uniqueTopicsArray = [...uniqueTopicsSet];
+                const sortedTopics = [...uniqueTopicsArray].sort();
+                setTopics(sortedTopics);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
     };
     //useeffect to fetch all posts
     useEffect(() => {
@@ -44,11 +52,11 @@ const AllTopics = () => {
         window.location.href = '/allposts';
     }
     return (
-        <div style={{ display: "flex", backgroundColor:"", justifyContent:"start", overflow: "auto"}}>
-            <h6 style={{margin: "auto 5px"}}>Hot Topics:</h6>
+        <div style={{ maxWidth: "800px", margin: "0 auto", padding: "20px", display: "flex", backgroundColor: "", justifyContent: "start", overflow: "auto" }}>
+            <h6 style={{ margin: "auto 5px" }}>Hot Topics:</h6>
             {
                 topics.map((topic, index) => (
-                    <li key={index} style={{ display: "inline", margin: "0px 0px", display: "flex" }}>
+                    <li key={index} style={{ display: "inline", margin: "0px 0px", display: "flex", flexWrap: "wrap" }}>
                         <Chip style={{ margin: "10px 10px", flex: 1 }} label={topic} value={topic} component="a" onClick={handleTopicClick} clickable />
                     </li>
                 ))

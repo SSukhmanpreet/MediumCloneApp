@@ -9,7 +9,7 @@ const Links = () => {
             <button style={{flex: 1, margin: "12px 5px"}} onClick={(e) => { window.location.href = '/UserLogin' }}>Log In</button>
             <button style={{flex: 1, margin: "12px 5px"}} onClick={(e) => { window.location.href = '/userProfile' }}>User Profile</button>
             <button style={{flex: 1, margin: "12px 5px"}} onClick={(e) => { window.location.href = '/userPosts' }}>My Posts</button>
-            <button style={{flex: 1, margin: "12px 5px"}} onClick={(e) => { window.location.href = '/allUsers' }}>All Authors</button>
+            {/* <button style={{flex: 1, margin: "12px 5px"}} onClick={(e) => { window.location.href = '/allUsers' }}>All Authors</button> */}
             <button style={{flex: 1, margin: "12px 5px"}} onClick={(e) => { window.location.href = '/allTopics' }}>All Topics</button>
         </div>
     )

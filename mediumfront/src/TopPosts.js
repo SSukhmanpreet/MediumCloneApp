@@ -228,27 +228,38 @@ const TopPosts = () => {
     ]);
     // const [filteredPosts, setFilteredPosts] = useState([]);
     const getAllPostsData = async () => {
-        const mockURL = `https://7c5df6d5-e40e-40f9-bdd2-4e8319aa7075.mock.pstmn.io`;
-        const res = await fetch(`${mockURL}/posts`, {
+        console.log(posts);
+        fetch(`http://127.0.0.1:3003/?page=1&books_per_page=100000`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
             }
-        });
-        const data = await res.json();
-        // console.log("data");
-        // console.log(data);
-        if (res.status === 404
-            // || !data
-        ) {
-            console.log("Error 404: while getting data in home ");
-        } else {
-            const topPosts = data.sort(
-                (p1, p2) => (p1.number_of_likes < p2.number_of_likes) ? 1 : (p1.number_of_likes > p2.number_of_likes) ? -1 : 0)
-                .slice(0, 5);
-            ;
-            setPosts(topPosts);
-        }
+        })
+            .then(response => {
+                console.log("in then");
+                console.log(response);
+                if (!response.ok) {
+                    // console.log("response not ok");
+                    // console.log(response);
+                    throw new Error('Network response was not ok. Could not fetch data for that resource');
+                }
+                // console.log("response ok");
+                // console.log(response);
+                return response.json();
+            })
+            .then(data => {
+                // const data = res.json();
+                console.log("data");
+                console.log(data);
+                // console.log(data[1].number_of_comments);
+                // setPosts(data);
+                const topPosts = data.sort((p1, p2) => (p1.number_of_likes < p2.number_of_likes) ? 1 : (p1.number_of_likes > p2.number_of_likes) ? -1 : 0);
+                setPosts(topPosts);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+            
     };
     useEffect(() => {
         console.log("loaded");
@@ -258,7 +269,7 @@ const TopPosts = () => {
     return (
         <div className='component-container'>
             <div><h2>Trending on Medium-Clone</h2></div>
-            {posts.map((post, key) => (
+            {posts.slice(0, 5).map((post, key) => (
                 <div className='posts-container' key={post.id}>
                     <Link to={`/allposts/postDetails/${post.id}`}>
                         <PostCard key={key} {...post}></PostCard>

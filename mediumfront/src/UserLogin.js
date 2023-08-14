@@ -1,106 +1,3 @@
-// import React, { useEffect, useState } from 'react';
-// import axios from "axios";
-
-// const UserLogin = () => {
-//     const [user, setUser] = useState({
-//         email: '',
-//         password: '',
-//     });
-
-//     const handleInputChange = (event) => {
-//         const { name, value } = event.target;
-//         setUser({ ...user, [name]: value });
-//     };
-
-//     const loginUser = async (event) => {
-//         event.preventDefault()
-//         console.log("onsubmit")
-//         window.location.href = '/userProfile'
-//         // const response = await fetch(`/login`, {
-//         //     method: 'POST',
-//         //     headers: {
-//         //         'Content-Type': 'application/json',
-//         //     },
-//         //     withCredentials: true,
-//         //     body: JSON.stringify(user),
-//         // })
-//         // const data = await response.json()
-//         // console.log(data.message)
-//         // if (response.status === 200) {
-//         //     localStorage.setItem('token', data.access_token)
-//         //     alert(data.message)
-//         //     window.location.href = '/userProfile'
-//         // } else {
-//         //     alert(data.message)
-//         // }
-//     };
-
-//     useEffect(async () => {
-//         console.log("LOADED");
-//         // if (localStorage.getItem('token')) {
-//         //     const givingToken = localStorage.getItem('token');
-//         //     console.log('token found')
-//         //     console.log(givingToken)
-//         //     const response = await fetch(`/auth`, {
-//         //         method: 'POST',
-//         //         headers: {
-//         //             'Content-Type': 'application/json',
-//         //         },
-//         //         body: JSON.stringify({
-//         //             token: givingToken,
-//         //         })
-//         //     })
-//         //     if (response.status === 200) {
-//         //         window.location.href = '/userProfile'
-//         //     }
-//         // }
-//     }, [])
-
-//     return (
-//         <div>
-//             <h2>User Login</h2>
-//             <form>
-//                 <div>
-//                     <label>Email:</label>
-//                     <input
-//                         type="email"
-//                         name="email"
-//                         value={user.email}
-//                         onChange={handleInputChange}
-//                     />
-//                 </div>
-//                 <div>
-//                     <label>Password:</label>
-//                     <input
-//                         type="password"
-//                         name="password"
-//                         value={user.password}
-//                         onChange={handleInputChange}
-//                     />
-//                 </div>
-//                 <div className='signInButton'>
-//                     <button type="submit" onClick={loginUser}>Login</button>
-//                 </div>
-//             </form>
-//         </div>
-
-//     );
-// };
-
-// export default UserLogin;
-
-
-
-
-
-
-
-
-
-
-
-
-
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -110,66 +7,87 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { useEffect, useState } from 'react';
-import axios from "axios";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function UserLogin() {
-    const [user, setUser] = useState({
-        email: '',
-        password: '',
-    });
+    // const [user, setUser] = useState({
+    //     email: '',
+    //     password: '',
+    // });
 
-    const handleInputChange = (event) => {
-        const { name, value } = event.target;
-        setUser({ ...user, [name]: value });
-        console.log(name + " " + value);
-    };
+    const navigate = useNavigate();
+    const [errorSignIn, setErrorSignIn] = useState("");
 
-    const loginUser = async (event) => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const loginUser = (event) => {
         event.preventDefault()
         console.log("onsubmit")
-        // window.location.href = '/userProfile'
-        const mockURL = `https://7c5df6d5-e40e-40f9-bdd2-4e8319aa7075.mock.pstmn.io`;
-        const response = await fetch(`${mockURL}/login`, {
-            method: 'POST',
+        fetch("http://127.0.0.1:3003/login", {
+            method: "POST",
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json'
             },
-            withCredentials: true,
-            body: JSON.stringify(user),
+            body: JSON.stringify({
+                user: { email: email, password: password }
+            })
         })
-        const data = await response.json();
-        console.log(data);
-        if (response.status === 200) {
-            localStorage.setItem('token', data.access_token);
-            // alert(data.message);
-            console.log(data.message);
-            window.location.href = '/userProfile';
-        } else {
-            alert(data.message)
-        }
-    };
+            .then(response => {
+                console.log("response");
+                console.log(response);
+                const authorizationHeader = response.headers.get('Authorization');
+                console.log("authorization", authorizationHeader);
+                if (authorizationHeader != null) {
+                    localStorage.Authorization = authorizationHeader;
+                    // props.setAuthorization(authorizationHeader);
+                }
 
+                return response.json()
+            })
+            .then(data => {
+                console.log("data");
+                console.log(data);
+                if ('error' in data) {
+                    setErrorSignIn(data.error);
+                }
+                else {
+                    // SubmitProps.resetForm();
+                    setEmail("");
+                    setPassword("");
+                    setErrorSignIn("");
+                    alert(data.status.message);
+                    navigate('/');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    };
     // useEffect(async () => {
     // console.log("LOADED");
-    // if (localStorage.getItem('token')) {
-    //     const givingToken = localStorage.getItem('token');
-    //     console.log('token found')
-    //     console.log(givingToken)
+    // if(props.authorization!="")
+    //     {
+    //       console.log(props.authorization)
+    //       navigate('/');
+    //     }
+    // if (localStorage.Authorization) {
     //     const response = await fetch(`/auth`, {
     //         method: 'POST',
     //         headers: {
     //             'Content-Type': 'application/json',
     //         },
     //         body: JSON.stringify({
-    //             token: givingToken,
+    //             Authorization: localStorage.Authorization,
     //         })
     //     })
     //     if (response.status === 200) {
-    //         window.location.href = '/userProfile'
+    //         navigate('/userProfile');
     //     }
     // }
-    // }, [])
+    // }, [props.authorization])
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
@@ -196,8 +114,8 @@ export default function UserLogin() {
                         autoFocus
                         type="email"
                         name="email"
-                        value={user.email}
-                        onChange={handleInputChange}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
                     <TextField
                         margin="normal"
@@ -210,9 +128,10 @@ export default function UserLogin() {
                         autoComplete="current-password"
                         type="password"
                         name="password"
-                        value={user.password}
-                        onChange={handleInputChange}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
+                    {errorSignIn != "" ? <div style={{color: "red"}} className='error'>{errorSignIn}</div> : null}
                     <Button
                         // type="submit"
                         fullWidth

@@ -3,6 +3,18 @@ import axios from 'axios';
 import EditPostForm from './EditPost';
 import { Link } from 'react-router-dom';
 import PostCard from './PostCard';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardMedia from '@mui/material/CardMedia';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import { red } from '@mui/material/colors';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import { Box } from '@mui/material';
+import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 
 const UserPostsList = () => {
     const [posts, setPosts] = useState([
@@ -235,91 +247,136 @@ const UserPostsList = () => {
     //         })
     //         .catch(error => console.error(error));
     // }, []);
+    const [mypost, setMypost] = useState([]);
 
     const getAllPostsData = async () => {
-        const mockURL = `https://7c5df6d5-e40e-40f9-bdd2-4e8319aa7075.mock.pstmn.io`;
-        const res = await fetch(`${mockURL}/posts/me`, {
-            method: "GET",
+        fetch('http://127.0.0.1:3003/my_posts', {
+            method: 'GET',
             headers: {
-                "Content-Type": "application/json"
+                'Authorization': localStorage.Authorization
             }
-        });
-        const data = await res.json();
-        console.log("data");
-        console.log(data);
-        if (res.status === 404
-            // || !data
-        ) {
-            console.log("Error 404: while getting data in home ");
-        } else {
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
             console.log("data");
-            setPosts(data);
-        }
+            console.log(data);
+            setMypost([...data.articles]);
+            console.log("mypost");
+            console.log(mypost);
+        })
+            .catch((error) => {
+                console.log(error);
+            })
     };
     useEffect(() => {
         console.log("loaded");
         getAllPostsData();
     }, []);
-    const handleDeletePost = async (postId) => {
-        const updatedPosts = posts.filter(post => post.id !== postId);
-        setPosts(updatedPosts);
 
-        // const res2 = await fetch(`/posts${id}`, {
-        //     method: "DELETE",
-        //     headers: {
-        //         "Content-Type": "application/json"
-        //     }
-        // });
+    const Delete = (id) => {
+        //   console.log(id,localStorage.Authorization);
+        fetch(`http://127.0.0.1:3003/delete/?id=${id}`,
+            {
+                method: 'DELETE',
+                headers: {
 
-        // const deleteData = await res2.json();
+                    'Authorization': localStorage.Authorization
+                }
+            })
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                // console.log(data);
+                let temp = mypost.filter((val) => val.id != id);
+                setMypost([...temp]);
 
-        // if (res2.status === 404 || !deleteData) {
-        //     console.log("error 404: while deleting data in edit");
-        // } else {
-        //     alert("Product DELETED from the database");
-        //     // getAllPostsData();
-        // }
-    };
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        alert('Deleted Post Successfully');
+    }
+
+    const Edit = (id) => {
+
+        let title = document.getElementById(id).children[0]; //title
+        let topic = document.getElementById(id).children[1].children[0]; //topic
+        let text = document.getElementById(id).children[4]; //text
+        let btn = document.getElementById(id).children[8].children[0]; //edit button
+        let img = document.getElementById(id).children[3] //image
+        document.getElementById(id).children[2].style.display = "none";
+        img.style.display = "block";
+        // console.log(title,text,topic,btn);
+
+        if (btn.innerHTML == "Edit") {
+            topic.contentEditable = true;
+            title.contentEditable = true;
+            text.contentEditable = true;
+            text.style.border = "2px solid black";
+            topic.style.border = "2px solid black";
+            title.style.border = "2px solid black";
+
+            btn.innerHTML = "Update";
+        }
+        else {
+
+            const file = img.files[0];
+            const formData = new FormData();
+            formData.append('image', file);
+            formData.append('title', title.innerHTML.replaceAll('&nbsp;', ' '));
+            formData.append('text', text.innerHTML.replaceAll('&nbsp;', ' '));
+            formData.append('topic', topic.innerHTML.replaceAll('&nbsp;', ' '));
+            formData.append('id', id);
+
+            axios.patch('http://127.0.0.1:3003/update', formData, {
+                headers: {
+                    'Authorization': localStorage.Authorization
+                }
+            }).then((res) => {
+                console.log(res);
+            })
+                .catch((err) => {
+                    console.log(err);
+                })
+
+
+            img.style.display = "none";
+            topic.contentEditable = false;
+            title.contentEditable = false;
+            text.contentEditable = false;
+            text.style.border = "white";
+            topic.style.border = "white";
+            title.style.border = "white";
+            btn.innerHTML = "Edit";
+            document.getElementById(id).children[2].style.display = "block";
+        }
+
+    }
+
+
+
+
     return (
         <div className='component-container'>
-            {/* Display Filtered Posts */}
             {
-                posts.map((post, key) => (
-                    // console.log(post)
-                    <div className='posts-container' key={post.id}>
-                        <PostCard key={key} {...post}></PostCard>
-                        <Link to={`editPost/${post.id}`}>
-                            {/* <Button color='warning' variant="contained">Edit</Button> */}
-                            <button className='postEdit-button'>Edit</button>
-                        </Link>
-                        <button className='postDelete-button' onClick={() => handleDeletePost(post.id)}>Delete</button>
-                        <hr />
-                    </div>
-                ))
+                mypost && mypost.map((post, key) => {
+                    return <li id={post.id} className="list_post" key={key}>
+                        <h3>{post.title}</h3>
+                        <h4 >Topic: <span >{post.topic.name}</span></h4>
+                        <img src={post.image_url} height={300} width={400}></img>
+                        <input style={{ display: "none" }} type="file" accept="image/*" />
+                        <p>{post.text}</p>
+                        <p>Likes: {post.likes}</p>
+                        <p>Comments: {post.comments}</p>
+                        <p>Views: {post.views}</p>
+                        <div>
+                            <button onClick={() => { Edit(post.id) }}>Edit</button>
+                            <button onClick={() => { Delete(post.id) }}>Delete</button>
+                        </div>
+                    </li>
+                })
             }
-            {/* {posts.map(post => (
-
-                <div className='posts-container' key={post.id}>
-                    <div>
-                        <Link>
-                            <h2 className='postHeading'>{post.title}</h2>
-                            <p className='postuser'>user: {post.user}</p>
-                            <p className='postDate'>Date: {post.date}</p>
-                            <p className='postText'>Text: {post.text}</p>
-                            <p className='postTopic'>Topic: {post.topic}</p>
-                            <img className='postimage' src='' alt={post.image}></img>
-                            <br />
-                            <button className='postLike-button'>Likes: {post.likes}</button>
-                            <button className='postComments-button'>Comments: {post.comments}</button>
-                        </Link>
-                        <Link to={`editPost/${post.id}`}>
-                            <button className='postEdit-button'>Edit</button>
-                        </Link>
-                        <button className='postDelete-button' onClick={() => handleDeletePost(post.id)}>Delete</button>
-                        <hr />
-                    </div>
-                </div>
-            ))} */}
         </div>
     );
 };

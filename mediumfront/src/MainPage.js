@@ -12,9 +12,14 @@ import EditPost from './EditPost';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PostDetails from './PostDetails';
 import UsersList from './UsersLIst';
-import AllTopics from './Topics';
+import AllTopicsList from './AllTopicsList';
+import UserLogOut from './UserLogOut';
+import Author from './AuthorPage';
+import Pay from './Pay';
+import AuthorProfile from './AuthorProfile';
 
 const MainPage = () => {
+    const [authorization, setAuthorization] = useState(localStorage.Authorization == undefined ? "" : localStorage.Authorization);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const sampleUser = {
         username: "sample-user-name",
@@ -269,17 +274,21 @@ const MainPage = () => {
         <Router>
             <div className='mainPage'>
                 <Routes>
-                    <Route path='/' element={<HomePage />} />
-                    <Route path='/allPosts' element={<AllPosts />} />
-                    <Route path='/addPost' element={<AddNewPost />} />
-                    <Route path='/UserSignUp' element={<UserSignUp />} />
-                    <Route path='/userLogin' element={<UserLogin />} />
-                    <Route path='/userProfile' element={<UserProfile user={user} />} />
-                    <Route path='/userPosts' element={<UserPostsList />} />
-                    <Route path='/userPosts/editPost/:id' element={<EditPost posts={sampleUser.posts} />} />
-                    <Route path='/allUsers' element={<UsersList />} />
-                    <Route path='/allTopics' element={<AllTopics />} />
-                    <Route path='/allPosts/postDetails/:id' element={<PostDetails posts={sampleUser.posts} />} />
+                    <Route path='/' element={<HomePage authorization={authorization} setAuthorization={setAuthorization} />} />
+                    <Route path='/allPosts' element={<AllPosts authorization={authorization} setAuthorization={setAuthorization} />} />
+                    <Route path='/addPost' element={<AddNewPost authorization={authorization} setAuthorization={setAuthorization} />} />
+                    <Route path='/UserSignUp' element={<UserSignUp authorization={authorization} setAuthorization={setAuthorization} />} />
+                    <Route path='/userLogin' element={<UserLogin authorization={authorization} setAuthorization={setAuthorization} />} />
+                    <Route path='/userLogOut' element={<UserLogOut posts={sampleUser.posts} authorization={authorization} setAuthorization={setAuthorization} />} />
+                    <Route path='/userProfile' element={<UserProfile user={user} authorization={authorization} setAuthorization={setAuthorization} />} />
+                    <Route path='/userPosts' element={<UserPostsList authorization={authorization} setAuthorization={setAuthorization} />} />
+                    <Route path='/userPosts/editPost/:id' element={<EditPost posts={sampleUser.posts} authorization={authorization} setAuthorization={setAuthorization} />} />
+                    <Route path='/allUsers' element={<UsersList authorization={authorization} setAuthorization={setAuthorization} />} />
+                    <Route path='/AllTopics' element={<AllTopicsList authorization={authorization} setAuthorization={setAuthorization} />} />
+                    <Route path='/allPosts/postDetails/:id' element={<PostDetails posts={sampleUser.posts} authorization={authorization} setAuthorization={setAuthorization} />} />
+                    <Route path='/author/:username' element={<Author authorization={authorization} setAuthorization={setAuthorization} />} />
+                    <Route path='/pay' element={<Pay authorization={authorization} setAuthorization={setAuthorization} />} />
+                    <Route path='/authorProfile/:username' element={<AuthorProfile authorization={authorization} setAuthorization={setAuthorization} />} />,
                 </Routes>
             </div>
         </Router>
